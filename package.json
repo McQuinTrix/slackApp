@@ -4,7 +4,6 @@
 	"dependencies":{
 		"http":"latest",
 		"querystring":"latest",
-		"express":"latest",
-		"url":"url"
+		"express":"latest"
 	}
 }
