@@ -1,6 +1,6 @@
 var http = require("http");
 var qs = require("querystring");
-console.log("Bavo");
+var port = process.env.PORT || 3000;
 http.createServer(function (request,response){
 	if(request.method === "POST"){
 		request.on('data',function(data){
@@ -9,4 +9,4 @@ http.createServer(function (request,response){
         		response.write('<!doctype html><html><head><title>Cool</title></head><body>'+Date.now()+'</body>')
 		})
 	}
-}).listen(8000);
+}).listen(port);
