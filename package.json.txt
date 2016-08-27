@@ -1,0 +1,8 @@
+{
+	"name": "SlackTest",
+	"main": "server.js",
+	"dependencies":{
+		"http":"latest",
+		"querystring":"latest"
+	}
+}
