@@ -13,7 +13,7 @@ app.get('/',function(req,res){
 	res.send('Running');
 });
 app.post('/liveh2h',function(req,res){
-	res.send("Got Message"+JSON.stringify(req));
+	res.send("Got Message"+req.body.text);
 });
 
 app.listen(app.get('port'), function() {
