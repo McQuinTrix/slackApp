@@ -9,8 +9,8 @@ app.use(express.json());
 app.set('port', (process.env.PORT));
 
 app.post('/liveh2h',function(req,res){
-	if(req.token === "bPQAKQ0fj4WHw37l8kIhwYZY"){
+	/*if(req.token === "bPQAKQ0fj4WHw37l8kIhwYZY"){
 		
-	}
+	}*/
 	res.send("Got Message");
-}).listen(port);
+});
