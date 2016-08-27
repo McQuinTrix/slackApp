@@ -3,6 +3,8 @@
 	"main": "server.js",
 	"dependencies":{
 		"http":"latest",
-		"querystring":"latest"
+		"querystring":"latest",
+		"express":"latest",
+		"url":"url"
 	}
 }
