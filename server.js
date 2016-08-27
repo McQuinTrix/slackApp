@@ -14,7 +14,7 @@ app.get('/',function(req,res){
 });
 app.get('/liveh2h',function(req,res){
 	var query = req.body.text;
-	res.send("Got Message"+(req.body.text? req.body.text : ""));
+	res.send("Got Message"+(req.text? req.text : ""));
 });
 
 app.listen(app.get('port'), function() {
