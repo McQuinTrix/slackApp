@@ -1,12 +1,16 @@
 var http = require("http");
 var qs = require("querystring");
 var port = process.env.PORT || 3000;
-http.createServer(function (request,response){
-	if(request.method === "POST"){
-		request.on('data',function(data){
-			console.log(data);
-			response.writeHead(200, {'Content-Type': 'text/html'});
-        		response.write('<!doctype html><html><head><title>Cool</title></head><body>'+Date.now()+'</body>')
-		})
+var express = require("express");
+var app = express();
+app.use(express.json());
+
+//port for Heroku
+app.set('port', (process.env.PORT));
+
+app.post('/liveh2h',function(req,res){
+	if(req.token === "bPQAKQ0fj4WHw37l8kIhwYZY"){
+		
 	}
+	res.send("Got Message");
 }).listen(port);
