@@ -5,6 +5,7 @@
 		"http":"latest",
 		"querystring":"latest",
 		"express":"latest",
-		"body-parser": "^1.14.2"
+		"body-parser": "^1.14.2",
+		"request":"2.74.0"
 	}
 }

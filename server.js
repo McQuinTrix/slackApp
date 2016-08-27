@@ -12,7 +12,7 @@ app.set('port', (process.env.PORT || 5000));
 app.get('/',function(req,res){
 	res.send('Running');
 });
-app.post('/liveh2h',function(req,res){
+app.get('/liveh2h',function(req,res){
 	var query = req.body.text;
 	res.send("Got Message");
 });
