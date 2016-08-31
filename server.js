@@ -15,7 +15,12 @@ app.get('/',function(req,res){
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
 	if(arr[0] === "create"){
-		res.send("Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it!"+req.body.text);
+		res.sendStatus(200);
+		res.send(JSON.stringify({
+			"response_type": 'in_channel',
+			"text": "Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it with: <"+arr[2]+">"
+		}));
+		//res.send("Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it!"+req.body.text);
 	}else{
 		res.send("I am sorry I didn't quite catch that!");
 	}
