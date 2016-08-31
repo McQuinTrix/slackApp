@@ -16,6 +16,7 @@ app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
 	if(arr[0] === "create"){
 		//res.sendStatus(200);
+		res.setHeader('Content-Type', 'application/json')
 		res.send(JSON.stringify({
 			"response_type": 'in_channel',
 			"text": "Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it with: <"+arr[2]+">"
