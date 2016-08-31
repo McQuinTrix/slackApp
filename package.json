@@ -6,7 +6,7 @@
     "express": "latest",
     "http": "latest",
     "querystring": "latest",
-    "request": "2.74.0",
+    "request": "^2.74.0",
     "require": "^2.4.20"
   }
 }

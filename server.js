@@ -3,7 +3,7 @@ var url = require("url");
 var express = require("express");
 var request = require("request");
 var bodyParser = require('body-parser');
-var request = require('require');
+var request = require('request');
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
