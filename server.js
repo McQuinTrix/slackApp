@@ -20,7 +20,6 @@ app.post('/liveh2h',function(req,res){
 		res.setHeader('Content-Type', 'application/json')
 		res.send(JSON.stringify({
 			"response_type": 'in_channel',
-			"text": "Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it with: <"+arr[2]+">"
 		}));
 		request.post(req.body.response_url,{json:{
 			"response_type": 'in_channel',
