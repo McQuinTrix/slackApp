@@ -14,7 +14,7 @@ app.get('/',function(req,res){
 });
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
-	if(req[0] === "create"){
+	if(arr[0] === "create"){
 		res.send("Ooo..So you "+req.body.user_name+" wanna create "+req[1]+"! Lets do it!");
 	}else{
 		res.send("I am sorry I didn't quite catch that!");
