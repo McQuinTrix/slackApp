@@ -25,6 +25,7 @@ app.post('/liveh2h',function(req,res){
 		}},function(err,resp,body){
 			
 		})
+		request.post("https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&channel=general&text=hey&username=mcquintrix&pretty=1");
 		//res.send("Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it!"+req.body.text);
 	}else{
 		res.send("I am sorry I didn't quite catch that!");
