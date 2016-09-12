@@ -15,7 +15,7 @@ app.get('/',function(req,res){
 });
 app.get('/liveh2h',function(req,res){
     var keys = Object.keys(req).join(" | ");
-    res.send("Hello");
+    res.send("Hello"+keys);
 })
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
