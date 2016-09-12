@@ -19,7 +19,7 @@ app.get('/liveh2h',function(req,res){
     Object.keys(req.body).forEach(function(elem){
         str += elem + ": " + req.body[elem];
     })
-    res.send(JSON.stringify(req));
+    res.send(str);
 })
 
 app.post('/liveh2h',function(req,res){
