@@ -15,6 +15,7 @@ app.get('/',function(req,res){
 });
 app.get('/liveh2h',function(req,res){
     res.send("Hello");
+    res.send("req");
 })
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
@@ -23,7 +24,7 @@ app.post('/liveh2h',function(req,res){
 		res.setHeader('Content-Type', 'application/json')
 		res.send("Creating..");
 		request.post(
-            response_url,{json:{
+            req.body.response_url,{json:{
 			"response_type": 'in_channel',
 			"text": "Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it with: <"+arr[2]+">"
 		}},function(err,resp,body){
