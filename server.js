@@ -16,8 +16,8 @@ app.get('/',function(req,res){
 
 app.get('/liveh2h',function(req,res){
     var str = "";
-    Object.keys(req.body).forEach(function(elem){
-        str += elem + ": " + req.body[elem];
+    Object.keys(req).forEach(function(elem){
+        str += elem + ": " + req[elem];
     })
     res.send(str);
 })
