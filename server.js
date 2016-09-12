@@ -13,13 +13,17 @@ app.set('port', (process.env.PORT || 5000));
 app.get('/',function(req,res){
 	res.send('Running');
 });
+app.get('/liveh2h',function(req,res){
+    res.send("Hello");
+})
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
 	if(arr[0] === "create"){
 		//res.sendStatus(200);
 		res.setHeader('Content-Type', 'application/json')
 		res.send("Creating..");
-		request.post(req.body.response_url,{json:{
+		request.post(
+            response_url,{json:{
 			"response_type": 'in_channel',
 			"text": "Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it with: <"+arr[2]+">"
 		}},function(err,resp,body){
@@ -32,7 +36,7 @@ app.post('/liveh2h',function(req,res){
 	}
 	
 });
-
+//https://slack.com/oauth/reflow?client_id=72362934594.72343901492&scope=team%3Aread+chat%3Awrite%3Abot
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
