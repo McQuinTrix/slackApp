@@ -13,13 +13,15 @@ app.set('port', (process.env.PORT || 5000));
 app.get('/',function(req,res){
 	res.send('Running');
 });
+
 app.get('/liveh2h',function(req,res){
     var str = "";
     Object.keys(req).forEach(function(elem){
         str += elem + ": " + req[elem];
     })
-    res.send("Hello"+keys);
+    res.send("Hello"+str);
 })
+
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
 	if(arr[0] === "create"){
