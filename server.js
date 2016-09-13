@@ -25,9 +25,15 @@ app.get('/liveh2h',function(req,res){
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
 	if(arr[0] === "create"){
+        if(arr[1] === "webinar"){
+            //res.setHeader('Content-Type', 'application/json')
+            res.send("Webinar not yet supported.");
+        }else if(arr[1] === "meeting"){
+            res.send("Creating a meeting and inviting others..")
+            "https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&channel=%40harshal&text=%22hello%22&username=LiveH2H&icon_url=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fslack-files2%2Favatars%2F2016-08-30%2F74712263348_338d6d654f54bdcb4685_48.png&pretty=1"
+        }
 		//res.sendStatus(200);
-		res.setHeader('Content-Type', 'application/json')
-		res.send("Creating..");
+		
 		request.post(
             req.body.response_url,{json:{
 			"response_type": 'in_channel',
