@@ -43,6 +43,7 @@ app.post('/liveh2h',function(req,res){
             var base64JSON = window.btoa(encodedJSON);
             requestJSON.host = "yes";
             window.location = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
+            /*
             request({
                 method: "POST",
                 uri: "https://slack.com/api/chat.postMessage",
@@ -58,9 +59,9 @@ app.post('/liveh2h',function(req,res){
                     })
                 }]
             });
-            /*
-            request.post("https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&channel=%40"+req.body.user_name+"&text=%22hello%22&username=LiveH2H&icon_url=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fslack-files2%2Favatars%2F2016-08-30%2F74712263348_338d6d654f54bdcb4685_48.png&pretty=1");
             */
+            request.post("https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&channel=general&text=%22hello%22&username=LiveH2H&icon_url=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fslack-files2%2Favatars%2F2016-08-30%2F74712263348_338d6d654f54bdcb4685_48.png&pretty=1");
+            
         }
 		//res.sendStatus(200);
 		/*
