@@ -51,7 +51,7 @@ app.post('/liveh2h',function(req,res){
                     'body': JSON.stringify({
                         "ok": "true",
                         "token": "xoxp-72362934594-72362934674-74712859188-7e4bab5339",
-                        "channel": "@"+req.body.user_name,
+                        "channel": "@harshal",
                         "text": "'hello'",
                         "username": "LiveH2H",
                         "icon_url": "https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png"
