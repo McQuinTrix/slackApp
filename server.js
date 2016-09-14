@@ -42,14 +42,14 @@ app.post('/liveh2h',function(req,res){
             var hLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
             var url = "https://slack.com/api/chat.postMessage?";
                 url += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
-                url += "&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png"
+                url += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png");
                 url += "&username=LiveH2H";
             
             var HostURL = url + "&channel=%40"+req.body.user_name;
                 HostURL += "&text=Your meeting has been created: <"+hLink+"|Click here to join>";
             var PartURL = "";
             //Host Messge
-            request.post(encodeURIComponent(HostURL));
+            request.post(HostURL);
             //Participants
             requestJSON.host = "no";
             arr.forEach(function(elem,num){
@@ -65,7 +65,7 @@ app.post('/liveh2h',function(req,res){
                         PartURL += "&channel="+elem
                         PartURL += "&text=Hello! "+req.body.user_name+" has created a meeting, and you all have been invited: <"+gLink+"|Click here to join>"
                     }
-                    request.post(encodeURIComponent(PartURL));
+                    request.post(PartURL);
                 }
             })
         }
