@@ -30,7 +30,7 @@ app.post('/liveh2h',function(req,res){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
         }else if(arr[1] === "meeting"){
-            res.send("Creating a meeting and inviting others..");
+            //res.send("Creating a meeting and inviting others..");
             var meetingID = random.integer(100000000, 999999999);
             
             var requestJSON = {
@@ -48,6 +48,7 @@ app.post('/liveh2h',function(req,res){
             
             var HostURL = url + "&channel=%40"+req.body.user_name;
                 HostURL += "&text=Your meeting has been created: <"+hLink+"|Click here to join>";
+            res.send(HostURL);
             var PartURL = "";
             //Host Messge
             request.post(encodeURIComponent(HostURL));
