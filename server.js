@@ -34,7 +34,7 @@ app.post('/liveh2h',function(req,res){
             var meetingID = random.integer(100000000, 999999999);
             var requestJSON = {
                 "origin": "H2H",
-                "meeting_id": meetingID,
+                "meeting_id": ""+meetingID,
                 "user_display_name": req.body.user_name.replace(/_/g, " ")
             };
             requestJSON.host = "yes";
