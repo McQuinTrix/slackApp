@@ -43,14 +43,15 @@ app.post('/liveh2h',function(req,res){
             var url = "https://slack.com/api/chat.postMessage?";
                 url += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
                 url += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png");
-                url += "&username=LiveH2H&as_user=true";
-            
+                url += "&username=LiveH2H";
+            var attachments = [{"text":"Your meeting has been created: <https://www.npmjs.com/package/random-js|Click here to join>"}]}
             var HostURL = url + "&channel=%40"+req.body.user_name;
-                HostURL += "&text=Your meeting has been created: <"+hLink+"%7CClick here to join>";
+                HostURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! Your meeting has been created: <'+hLink+'|Click here to join>"}]');
             var PartURL = "";
             //Host Messge
             request.post(HostURL);
             //Participants
+            
             requestJSON.host = "no";
             arr.forEach(function(elem,num){
                 if(num > 1){
@@ -59,11 +60,11 @@ app.post('/liveh2h',function(req,res){
                         base64JSON = btoa(encodeURIComponent(JSON.stringify(requestJSON)));
                         var pLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
                         PartURL += url+"&channel=%40"+requestJSON.user_display_name
-                        PartURL += "&text=Hello! "+req.body.user_name+" has created a meeting, and you have been invited: <"+pLink+"%7CClick here to join>"
+                        PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]')
                     }else if(elem[0] === "#"){
                         var gLink = "https://meet1.liveh2h.com/index.html?roomname="+requestJSON.meeting_id;
                         PartURL += "&channel="+elem.substring(1);
-                        PartURL += "&text=Hello! "+req.body.user_name+" has created a meeting, and you all have been invited: <"+gLink+"%7CClick here to join>"
+                        PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you all have been invited: <'+gLink+'|Click here to join>"}]')
                     }
                     request.post(PartURL);
                 }
