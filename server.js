@@ -48,7 +48,7 @@ app.post('/liveh2h',function(req,res){
             
             var HostURL = url + "&channel=%40"+req.body.user_name;
                 HostURL += "&text=Your meeting has been created: <"+hLink+"|Click here to join>";
-            var PartURL += "";
+            var PartURL = "";
             //Host Messge
             request.post(encodeURIComponent(HostURL));
             //Participants
