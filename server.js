@@ -14,7 +14,6 @@ app.set('port', (process.env.PORT || 5000));
 app.get('/',function(req,res){
 	res.send('Running');
 });
-
 /*app.get('/liveh2h',function(req,res){
     var str = "";
     Object.keys(req).forEach(function(elem){
@@ -30,7 +29,8 @@ app.post('/liveh2h',function(req,res){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
         }else if(arr[1] === "meeting"){
-            //res.send("Creating a meeting and inviting others..");
+            res.sendStatus(200);
+            res.send("Creating a meeting and inviting others..");
             var meetingID = random.integer(100000000, 999999999);
             res.send(meetingID);
             var requestJSON = {
@@ -38,7 +38,7 @@ app.post('/liveh2h',function(req,res){
                 "meeting_id": meetingID,
                 "user_display_name": req.body.user_name.replace(/_/g, " ")
             };
-            res.send(requestJSON);
+            res.send(JSON.stringify(requestJSON));
             requestJSON.host = "yes";
             var base64JSON = window.btoa(encodeURIComponent(JSON.stringify(requestJSON)));
             var hLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
@@ -72,7 +72,7 @@ app.post('/liveh2h',function(req,res){
                 }
             })
         }
-		//res.sendStatus(200);
+		//
 		/*
 		request.post(
             req.body.response_url,{json:{
