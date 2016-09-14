@@ -15,13 +15,13 @@ app.get('/',function(req,res){
 	res.send('Running');
 });
 
-app.get('/liveh2h',function(req,res){
+/*app.get('/liveh2h',function(req,res){
     var str = "";
     Object.keys(req).forEach(function(elem){
         str += elem + ": " + req[elem]+"\n";
     })
     res.send(str);
-})
+})*/
 
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
