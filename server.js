@@ -56,6 +56,7 @@ app.post('/liveh2h',function(req,res){
                 if(num > 1){
                     if(elem[0] === "@"){
                         requestJSON.user_display_name = elem.substring(1);
+                        console.log(requestJSON);
                         base64JSON = btoa(encodeURIComponent(JSON.stringify(requestJSON)));
                         var pLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
                         PartURL += url+"&channel=%40"+requestJSON.user_display_name
