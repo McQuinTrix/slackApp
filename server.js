@@ -32,12 +32,13 @@ app.post('/liveh2h',function(req,res){
         }else if(arr[1] === "meeting"){
             //res.send("Creating a meeting and inviting others..");
             var meetingID = random.integer(100000000, 999999999);
-            
+            res.send(meetingID);
             var requestJSON = {
                 "origin": "H2H",
                 "meeting_id": meetingID,
                 "user_display_name": req.body.user_name.replace(/_/g, " ")
             };
+            res.send(requestJSON);
             requestJSON.host = "yes";
             var base64JSON = window.btoa(encodeURIComponent(JSON.stringify(requestJSON)));
             var hLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
