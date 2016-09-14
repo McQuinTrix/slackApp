@@ -58,7 +58,7 @@ app.post('/liveh2h',function(req,res){
                         requestJSON.user_display_name = elem.substring(1);
                         base64JSON = btoa(encodeURIComponent(JSON.stringify(requestJSON)));
                         var pLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
-                        PartURL += "&channel=%40"+requestJSON.user_display_name
+                        PartURL += url+"&channel=%40"+requestJSON.user_display_name
                         PartURL += "&text=Hello! "+req.body.user_name+" has created a meeting, and you have been invited: <"+pLink+"%7CClick here to join>"
                     }else if(elem[0] === "#"){
                         var gLink = "https://meet1.liveh2h.com/index.html?roomname="+requestJSON.meeting_id;
