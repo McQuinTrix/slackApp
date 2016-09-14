@@ -38,30 +38,37 @@ app.post('/liveh2h',function(req,res){
                 "meeting_id": meetingID,
                 "user_display_name": name.replace(/_/g, " ")
             };
-            var stringifiedJSON = JSON.stringify(requestJSON);
-            var encodedJSON = encodeURIComponent(stringifiedJSON);
-            var base64JSON = window.btoa(encodedJSON);
             requestJSON.host = "yes";
-            window.location = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
-            /*
-            request({
-                method: "POST",
-                uri: "https://slack.com/api/chat.postMessage",
-                multipart:[{
-                    'content-type': 'application/json',
-                    'body': JSON.stringify({
-                        "ok": "true",
-                        "token": "xoxp-72362934594-72362934674-74712859188-7e4bab5339",
-                        "channel": "@harshal",
-                        "text": "'hello'",
-                        "username": "LiveH2H",
-                        "icon_url": "https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png"
-                    })
-                }]
-            });
-            */
-            request.post("https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&channel=general&text=%22hello%22&username=LiveH2H&icon_url=https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fslack-files2%2Favatars%2F2016-08-30%2F74712263348_338d6d654f54bdcb4685_48.png&pretty=1");
+            var base64JSON = window.btoa(encodeURIComponent(JSON.stringify(requestJSON)));
+            var hLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
+            var url = "https://slack.com/api/chat.postMessage?";
+                url += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
+                url += "&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png"
+                url += "&username=LiveH2H";
             
+            var HostURL = url + "&channel=%40"+req.body.user_name;
+                HostURL += "&text=Your meeting has been created: <"+hLink+"|Click here to join>";
+            var PartURL += "";
+            //Host Messge
+            request.post(encodeURIComponent(HostURL));
+            //Participants
+            requestJSON.host = "no";
+            arr.forEach(function(elem,num){
+                if(num > 1){
+                    if(elem[0] === "@"){
+                        requestJSON.user_display_name = elem.substring(1);
+                        base64JSON = window.btoa(encodeURIComponent(JSON.stringify(requestJSON)));
+                        var pLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
+                        PartURL += "&channel=%40"+requestJSON.user_display_name
+                        PartURL += "&text=Hello! "+req.body.user_name+" has created a meeting, and you have been invited: <"+pLink+"|Click here to join>"
+                    }else if(elem[0] === "#"){
+                        var glink = "https://meet1.liveh2h.com/index.html?roomname="+requestJSON.meeting_id;
+                        PartURL += "&channel="+elem
+                        PartURL += "&text=Hello! "+req.body.user_name+" has created a meeting, and you all have been invited: <"+gLink+"|Click here to join>"
+                    }
+                    request.post(encodeURIComponent(PartURL));
+                }
+            })
         }
 		//res.sendStatus(200);
 		/*
@@ -73,15 +80,14 @@ app.post('/liveh2h',function(req,res){
 			
 		})*/
         /*
-		request.post("https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&channel=general&text=hey&username=mcquintrix&pretty=1");
-        */
-		//res.send("Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it!"+req.body.text);
+		request.post("https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&channel=general&text=hey&username=mcquintrix&pretty=1");*/
 	}else{
 		res.send("I am sorry I didn't quite catch that!");
 	}
 	
 });
-//https://slack.com/oauth/reflow?client_id=72362934594.72343901492&scope=team%3Aread+chat%3Awrite%3Abot
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
+    
