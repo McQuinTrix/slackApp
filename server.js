@@ -6,6 +6,7 @@ var request = require("request");
 var bodyParser = require('body-parser');
 var request = require('request');
 var app = express();
+var btoa = require('btoa')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -38,7 +39,7 @@ app.post('/liveh2h',function(req,res){
             };
             res.send(JSON.stringify(requestJSON));
             requestJSON.host = "yes";
-            var base64JSON = window.btoa(encodeURIComponent(JSON.stringify(requestJSON)));
+            var base64JSON = btoa(encodeURIComponent(JSON.stringify(requestJSON)));
             var hLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
             var url = "https://slack.com/api/chat.postMessage?";
                 url += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
@@ -57,7 +58,7 @@ app.post('/liveh2h',function(req,res){
                 if(num > 1){
                     if(elem[0] === "@"){
                         requestJSON.user_display_name = elem.substring(1);
-                        base64JSON = window.btoa(encodeURIComponent(JSON.stringify(requestJSON)));
+                        base64JSON = btoa(encodeURIComponent(JSON.stringify(requestJSON)));
                         var pLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
                         PartURL += "&channel=%40"+requestJSON.user_display_name
                         PartURL += "&text=Hello! "+req.body.user_name+" has created a meeting, and you have been invited: <"+pLink+"|Click here to join>"
