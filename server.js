@@ -44,7 +44,6 @@ app.post('/liveh2h',function(req,res){
                 url += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
                 url += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png");
                 url += "&username=LiveH2H";
-            var attachments = [{"text":"Your meeting has been created: <https://www.npmjs.com/package/random-js|Click here to join>"}]}
             var HostURL = url + "&channel=%40"+req.body.user_name;
                 HostURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! Your meeting has been created: <'+hLink+'|Click here to join>"}]');
             var PartURL = "";
