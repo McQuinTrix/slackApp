@@ -29,10 +29,8 @@ app.post('/liveh2h',function(req,res){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
         }else if(arr[1] === "meeting"){
-            res.sendStatus(200);
-            res.send("Creating a meeting and inviting others..");
+            //res.send("Creating a meeting and inviting others..");
             var meetingID = random.integer(100000000, 999999999);
-            res.send(meetingID);
             var requestJSON = {
                 "origin": "H2H",
                 "meeting_id": meetingID,
