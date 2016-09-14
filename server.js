@@ -36,7 +36,7 @@ app.post('/liveh2h',function(req,res){
             var requestJSON = {
                 "origin": "H2H",
                 "meeting_id": meetingID,
-                "user_display_name": name.replace(/_/g, " ")
+                "user_display_name": req.body.user_name.replace(/_/g, " ")
             };
             requestJSON.host = "yes";
             var base64JSON = window.btoa(encodeURIComponent(JSON.stringify(requestJSON)));
