@@ -23,6 +23,28 @@ app.get('/',function(req,res){
     res.send(str);
 })*/
 
+app.post('/hipchat',function(req,res){
+    var json = {
+        "color": "green",
+        "message": JSON.stringify(req),
+        "notify": false,
+        "message_format": "text"
+    }
+    request({
+        url: "https://devliveh2h.hipchat.com/v2/room/3119009/notification?auth_token=FLRZkAPekTGr89ZjP61lYm1kJnzOUf8TpdyVIBYX",
+        method: "POST",
+        json: json
+    },function(err,resp,body){
+        if(error){
+            console.log(error);
+        }else{
+            console.log(resp.statusCode, body);
+        }
+    })
+    /*res.setHeader('Content-Type', 'application/json');
+    res.send(json);*/
+})
+
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
 	if(arr[0] === "create"){
