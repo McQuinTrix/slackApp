@@ -15,13 +15,10 @@ app.set('port', (process.env.PORT || 5000));
 app.get('/',function(req,res){
 	res.send('Running');
 });
-/*app.get('/liveh2h',function(req,res){
+app.get('/authorize',function(req,res){
     var str = "";
-    Object.keys(req).forEach(function(elem){
-        str += elem + ": " + req[elem]+"\n";
-    })
-    res.send(str);
-})*/
+    console.log(req);
+})
 
 app.post('/hipchat',function(req,res){
     var json = {
@@ -45,11 +42,10 @@ app.post('/hipchat',function(req,res){
 
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
-	if(arr[0] === "create"){
-        if(arr[1] === "webinar"){
+        if(arr[0] === "webinar"){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
-        }else if(arr[1] === "meeting"){
+        }else if(arr[0] === "meetnow"){
             res.send("Creating a meeting and inviting others..");
             var meetingID = random.integer(100000000, 999999999);
             var requestJSON = {
@@ -73,10 +69,9 @@ app.post('/liveh2h',function(req,res){
             //Participants
             requestJSON.host = "no";
             arr.forEach(function(elem,num){
-                if(num > 1){
+                if(num > 0){
                     if(elem[0] === "@"){
                         requestJSON.user_display_name = elem.substring(1);
-                        console.log(requestJSON);
                         base64JSON = btoa(encodeURIComponent(JSON.stringify(requestJSON)));
                         var pLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
                         PartURL += url+"&channel=%40"+requestJSON.user_display_name
@@ -90,20 +85,11 @@ app.post('/liveh2h',function(req,res){
                     request.post(PartURL);
                 }
             })
+        }else if(arr[0] === "help"){
+            res.send("Help Command");
+        }else{
+            res.send("I am sorry I didn't quite catch that!");
         }
-		/*
-		request.post(
-            req.body.response_url,{json:{
-			"response_type": 'in_channel',
-			"text": "Ooo..So you <@"+req.body.user_id+"|"+req.body.user_name+"> wanna create "+arr[1]+"! Lets do it with: <"+arr[2]+">"
-		}},function(err,resp,body){
-			
-		})*/
-        /*
-		request.post("https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&channel=general&text=hey&username=mcquintrix&pretty=1");*/
-	}else{
-		res.send("I am sorry I didn't quite catch that!");
-	}
 	
 });
 
