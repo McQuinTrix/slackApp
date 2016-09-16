@@ -41,8 +41,6 @@ app.post('/hipchat',function(req,res){
             console.log(resp.statusCode, body);
         }
     })
-    /*res.setHeader('Content-Type', 'application/json');
-    res.send(json);*/
 })
 
 app.post('/liveh2h',function(req,res){
@@ -71,8 +69,8 @@ app.post('/liveh2h',function(req,res){
             var PartURL = "";
             //Host Messge
             request.post(HostURL);
-            //Participants
             
+            //Participants
             requestJSON.host = "no";
             arr.forEach(function(elem,num){
                 if(num > 1){
@@ -85,7 +83,7 @@ app.post('/liveh2h',function(req,res){
                         PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]')
                     }else if(elem[0] === "#"){
                         var gLink = "https://meet1.liveh2h.com/index.html?roomname="+requestJSON.meeting_id;
-                        PartURL += "&channel="+elem.substring(1);
+                        PartURL += url + "&channel="+elem.substring(1);
                         PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you all have been invited: <'+gLink+'|Click here to join>"}]')
                     }
                     request.post(PartURL);
