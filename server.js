@@ -42,6 +42,7 @@ app.post('/hipchat',function(req,res){
 
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" ");
+    console.log(req.body.channel_id);
         if(arr[0] === "webinar"){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
