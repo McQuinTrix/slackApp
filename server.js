@@ -82,7 +82,7 @@ app.post('/liveh2h',function(req,res){
                         PartURL += url+"&channel=%40"+requestJSON.user_display_name
                         PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]')
                     }else if(elem[0] === "#"){
-                        var gLink = "https://meet1.liveh2h.com/index.html?roomname="+requestJSON.meeting_id;
+                        var gLink = "https://meet1.liveh2h.com/index.html?roomname="+requestJSON.meeting_id.splice(2,0,"-").splice(5,0,"-");
                         PartURL += url + "&channel="+elem.substring(1);
                         PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you all have been invited: <'+gLink+'|Click here to join>"}]')
                     }
