@@ -17,7 +17,7 @@ app.get('/',function(req,res){
 });
 app.get('/authorize',function(req,res){
     var str = "";
-    console.log(req);
+    console.log(req.ServerResponse.query.code);
 })
 
 app.post('/hipchat',function(req,res){
@@ -41,8 +41,8 @@ app.post('/hipchat',function(req,res){
 })
 
 app.post('/liveh2h',function(req,res){
-	var arr = req.body.text.split(" ");
-    console.log(req.body.channel_id);
+	var arr = req.body.text.split(" "),
+        thisChannel = req.body.channel_id;
         if(arr[0] === "webinar"){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
@@ -54,6 +54,7 @@ app.post('/liveh2h',function(req,res){
                 "meeting_id": ""+meetingID,
                 "user_display_name": req.body.user_name.replace(/_/g, " ")
             };
+            //https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png&username=LiveH2H&channel=''
             requestJSON.host = "yes";
             var base64JSON = btoa(encodeURIComponent(JSON.stringify(requestJSON)));
             var hLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
