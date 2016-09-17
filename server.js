@@ -17,7 +17,11 @@ app.get('/',function(req,res){
 });
 app.get('/authorize',function(req,res){
     var str = "";
+    var code = req.query.code;
     console.log(req.query.code);
+    request.post("https://slack.com/api/oauth.access?client_id=72362934594.72343901492&client_secret=774325bbe3f942efb71d5db978eb5a4b&code="+code,function(err,resp,body){
+        console.log(body);
+    })
 })
 
 app.post('/hipchat',function(req,res){
