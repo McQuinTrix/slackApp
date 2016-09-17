@@ -45,6 +45,23 @@ app.get('/authorize',function(req,res){
     console.log(req.query.code);
     request.post("https://slack.com/api/oauth.access?client_id=72362934594.72343901492&client_secret=774325bbe3f942efb71d5db978eb5a4b&code="+code,function(err,resp,body){
         console.log(body);
+        var json = JSON.stringify(body),
+                access_token = json.access_token,
+                user_id = json.user_id,
+                team_name = json.team_name,
+                team_id = json.team_id,
+                bot_user_id = json.bot.bot_user_id,
+                bot_access_token = json.bot.bot_access_token
+            console.log(team_id,access_token,team_name,bot_user_id,bot_access_token);
+            var theString = "INSERT INTO slack.tokens (team_id,access_token,team_name,bot_user_id,bot_access_token) VALUES (";
+                theString += team_id +", "+access_token+", "+team_name+", "+bot_user_id+", "+bot_access_token+");"
+            pg.connect(process.env.DATABASE_URL, function(err,client,done){
+                client.query(theString, function(err,result){
+                    done();
+                    if(err){console.error(err);}
+                    else{console.log(result);}
+                })
+            })
     })
 })
 
@@ -64,23 +81,6 @@ app.post('/hipchat',function(req,res){
             console.log(err);
         }else{
             console.log(resp.statusCode, body);
-            var json = JSON.stringify(body),
-                access_token = json.access_token,
-                user_id = json.user_id,
-                team_name = json.team_name,
-                team_id = json.team_id,
-                bot_user_id = json.bot.bot_user_id,
-                bot_access_token = json.bot.bot_access_token
-            console.log(team_id,access_token,team_name,bot_user_id,bot_access_token);
-            var theString = "INSERT INTO slack.tokens (team_id,access_token,team_name,bot_user_id,bot_access_token) VALUES (";
-                theString += team_id +", "+access_token+", "+team_name+", "+bot_user_id+", "+bot_access_token+");"
-            pg.connect(process.env.DATABASE_URL, function(err,client,done){
-                client.query(theString, function(err,result){
-                    done();
-                    if(err){console.error(err);}
-                    else{console.log(result);}
-                })
-            })
         }
     })
 })
