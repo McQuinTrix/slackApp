@@ -17,7 +17,7 @@ app.get('/',function(req,res){
 });
 app.get('/authorize',function(req,res){
     var str = "";
-    console.log(req.ServerResponse.query.code);
+    console.log(req.query.code);
 })
 
 app.post('/hipchat',function(req,res){
