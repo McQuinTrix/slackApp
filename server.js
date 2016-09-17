@@ -10,6 +10,19 @@ var btoa = require('btoa')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+var pg = require('pg');
+
+pg.defaults.ssl = true;
+pg.connect(process.env.DATABASE_URL, function(err, client) {
+  if (err) throw err;
+  console.log('Connected to postgres! Getting schemas...');
+
+  client.query('SELECT * FROM slack.tokens;')
+    .on('row', function(row) {
+      console.log(JSON.stringify(row));
+    });
+});
+
 //port for Heroku
 app.set('port', (process.env.PORT || 5000));
 app.get('/',function(req,res){
@@ -36,10 +49,18 @@ app.post('/hipchat',function(req,res){
         method: "POST",
         json: json
     },function(err,resp,body){
-        if(error){
-            console.log(error);
+        if(err){
+            console.log(err);
         }else{
             console.log(resp.statusCode, body);
+            var json = JSON.stringify(body),
+                access_token = json.access_token,
+                user_id = json.user_id,
+                team_name = json.team_name,
+                team_id = json.team_id,
+                bot_user_id = json.bot.bot_user_id,
+                bot_access_token = json.bot.bot_access_token
+            console.log(team_id,access_token,team_name,bot_user_id,bot_access_token);
         }
     })
 })
