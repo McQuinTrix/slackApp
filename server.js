@@ -9,6 +9,17 @@ var app = express();
 var btoa = require('btoa')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+/*
+
+create schema slack;
+create table slack.tokens;
+create table slack.tokens(
+TEAM_ID VARCHAR(100) PRIMARY KEY NOT NULL,
+ACCESS_TOKEN VARCHAR(100) NOT NULL,
+TEAM_NAME VARCHAR(100),
+BOT_USER_ID VARCHAR(100) NOT NULL,
+BOT_ACCESS_TOKEN VARCHAR(100) NOT NULL);
+*/
 
 var pg = require('pg');
 
