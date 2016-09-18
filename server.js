@@ -168,7 +168,23 @@ app.post('/liveh2h',function(req,res){
             //https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png&username=LiveH2H&channel=''
             
         }else if(arr[0] === "help"){
-            res.send("Help Command");
+            res.send("LiveH2H Help!");
+            request.post(req.body.response_url,{
+                json:{
+                "response_type": 'in_channel',
+                attachments: [{
+                    "fallback": "/liveh2h [@username | #channel] | /liveh2h meetnow [@username | #channel]| /liveh2h join xxx-xxx-xxx(9 Digit Meeting Number) | /liveh2h help",
+                    title: "LiveH2H Commands:",
+                    "text": ":small_blue_diamond:`/liveh2h [@username | #channel]` or `/liveh2h meetnow [@username | #channel]` to invite using username or invite whole channel. \n :small_blue_diamond: `/liveh2h join xxx-xxx-xxx`(9 Digit Meeting Number) to join an existing meeting \n :small_blue_diamond: `/liveh2h help` Lists available commands. \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
+                    "footer": "LiveH2H",
+                    "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png",
+                    "ts": Date.now()
+                }]
+                
+            }},function(err,resp,body){
+                
+            })
+
         }else if(arr[0] === "join"){
             res.send("Creating your link...");
             var partstr ={"name": req.body.user_name.replace(/_/g, " ") ,"meetingId":arr[1].replace(/-/g,"")};
