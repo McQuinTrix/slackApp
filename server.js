@@ -49,8 +49,8 @@ app.get('/authorize',function(req,res){
             bot_user_id = json.bot.bot_user_id,
             bot_access_token = json.bot.bot_access_token;
         //QUERIES----
-        var theSelect = "SELECT * FROM slack.tokens WHERE team_id =='"+team_id+"'",
-            theDelete = "DELETE FROM slack.tokens WHERE team_id =='"+team_id+"'",
+        var theSelect = "SELECT * FROM slack.tokens WHERE team_id ='"+team_id+"'",
+            theDelete = "DELETE FROM slack.tokens WHERE team_id ='"+team_id+"'",
             theString = "INSERT INTO slack.tokens (team_id,access_token,team_name,bot_user_id,bot_access_token) VALUES ('";
         theString += team_id +"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');"
         //-----------
