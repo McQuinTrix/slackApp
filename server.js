@@ -9,10 +9,9 @@ var app = express();
 var btoa = require('btoa')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-/*
 
+/*
 create schema slack;
-create table slack.tokens;
 create table slack.tokens(
 TEAM_ID VARCHAR(100) PRIMARY KEY NOT NULL,
 ACCESS_TOKEN VARCHAR(100) NOT NULL,
@@ -39,14 +38,21 @@ app.set('port', (process.env.PORT || 5000));
 app.get('/',function(req,res){
 	res.send('Running');
 });
+
 app.get('/authorize',function(req,res){
     var str = "";
     var code = req.query.code;
     console.log(req.query.code);
     request.post("https://slack.com/api/oauth.access?client_id=72362934594.72343901492&client_secret=774325bbe3f942efb71d5db978eb5a4b&code="+code,function(err,resp,body){
         console.log(body);
-        var json = JSON.stringify(body),
-                access_token = json.access_token,
+        var json = JSON.stringify(body);
+        console.log(typeof json.bot);
+        if(typeof json.bot === "object"){
+            console.log(json.bot.bot_user_id);
+        }else{
+            console.log(json.bot);
+        }
+            var access_token = json.access_token,
                 user_id = json.user_id,
                 team_name = json.team_name,
                 team_id = json.team_id,
