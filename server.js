@@ -195,7 +195,7 @@ app.post('/liveh2h',function(req,res){
                 json: partstr
             }, function(err,resp){
                 if(err){throw err;}
-
+                console.log(resp.body);
                 pLink = resp.body.data.meetingURL;
                 console.log(pLink);
                 PartURL = urlSlack+"&channel=%40"+req.body.user_name;
