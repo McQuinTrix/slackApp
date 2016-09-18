@@ -117,7 +117,7 @@ app.post('/liveh2h',function(req,res){
                 meetingurl = response.body.data.meetingURL;
                 var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
                     meetingID = response.body.data.meetingId;
-                
+                console.log(meetingID)
                 var hLink = response.body.data.meetingURL;
             
                 var urlSlack = "https://slack.com/api/chat.postMessage?";
@@ -137,6 +137,7 @@ app.post('/liveh2h',function(req,res){
                     if((arr[0]==="meetnow" && num > 0) || (arr[0]!=="meetnow")){
                         if(elem[0] === "@"){
                             var pLink = "";
+                            console.log(meetingID)
                             var partstr ={"name": elem.substring(1),"meetingId":meetingID};
                             request({
                                 uri: apiUrl,
