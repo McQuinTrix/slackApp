@@ -115,7 +115,7 @@ app.post('/liveh2h',function(req,res){
                 json: objstr
             },function(err,response,body){
                 if(err){throw err;}
-                console.log(response);
+                console.log(response.data);
                 meetingurl = response.data.meetingURL;
                 var pointOne = meetingurl.indexOf(".html?p=") + 8,
                     pointTwo = meetingurl.indexOf("&b=true"),
