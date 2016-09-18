@@ -93,7 +93,12 @@ app.get('/authorize',function(req,res){
 //Slash Command
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" "),
-        thisChannel = req.body.channel_id;
+        thisChannel = req.body.channel_id,
+        urlSlack = "https://slack.com/api/chat.postMessage?";
+        urlSlack += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
+        urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png");
+        urlSlack += "&username=LiveH2H";
+    
         if(arr[0] === "webinar"){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
@@ -119,11 +124,6 @@ app.post('/liveh2h',function(req,res){
                     meetingID = response.body.data.meetingId;
                 console.log(meetingID)
                 var hLink = response.body.data.meetingURL;
-            
-                var urlSlack = "https://slack.com/api/chat.postMessage?";
-                    urlSlack += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
-                    urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png");
-                    urlSlack += "&username=LiveH2H";
                 
                 var HostURL = urlSlack + "&channel=%40"+req.body.user_name;
                     HostURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! Your meeting has been created: <'+hLink+'|Click here to join>"}]');
@@ -169,8 +169,22 @@ app.post('/liveh2h',function(req,res){
             
         }else if(arr[0] === "help"){
             res.send("Help Command");
+        }else if(arr[0] === "join"){
+            var partstr ={"name": req.body.user_name.replace(/_/g, " ") ,"meetingId":arr[1].replace(/-/g,"")};
+            request({
+                uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
+                method: 'POST',
+                json: partstr
+            }, function(err,resp){
+                if(err){throw err;}
+
+                pLink = resp.body.data.meetingURL;
+                console.log(pLink);
+                PartURL = urlSlack+"&channel=%40"+req.body.user_name;
+                PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
+            });
         }else{
-            res.send("I am sorry I didn't quite catch that!");
+            res.send("I am sorry I didn't quite catch that! Type ```/liveh2h help``` for list of available commands.");
         }
 	
 });
