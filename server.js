@@ -155,8 +155,8 @@ app.post('/liveh2h',function(req,res){
                             })
                             
                         }else if(elem[0] === "#"){
-                            var theID = meetingID.substring(0,3) + "-" + meetingID.substring(3,6)+ "-" + meetingID.substring(6);
-                            var gLink = "https://liveh2h.com/"+theID;
+                            //var theID = meetingID.substring(0,3) + "-" + meetingID.substring(3,6)+ "-" + meetingID.substring(6);
+                            var gLink = "https://liveh2h.com/"+meetingID;
                             PartURL += urlSlack + "&channel="+elem.substring(1);
                             PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you all have been invited: <'+gLink+'|Click here to join>"}]')
                             request.post(PartURL);
