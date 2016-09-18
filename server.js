@@ -105,9 +105,7 @@ app.post('/liveh2h',function(req,res){
                 email = "",
                 //email = document.getElementById("meetform1").elements["emailfield"].value;
                 obj = {name:name, email:email},
-                objstr = JSON.stringify(obj),
                 meetingurl = "";
-            console.log(objstr);
             //CALL TO API
             request({
                 uri: apiUrl,
@@ -116,13 +114,11 @@ app.post('/liveh2h',function(req,res){
             },function(err,response,body){
                 if(err){throw err;}
                 console.log(response.body);
-                meetingurl = response.data.meetingURL;
-                var pointOne = meetingurl.indexOf(".html?p=") + 8,
-                    pointTwo = meetingurl.indexOf("&b=true"),
-                    urlDecoded = JSON.parse(decodeURIComponent(atob(meetingurl.substring(pointOne,pointTwo)))),
+                meetingurl = response.body.data.meetingURL;
+                var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
                     meetingID = urlDecoded.meeting_id;
                 
-                var hLink = response.data.meetingURL;
+                var hLink = response.body.data.meetingURL;
             
                 var urlSlack = "https://slack.com/api/chat.postMessage?";
                     urlSlack += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
@@ -140,7 +136,7 @@ app.post('/liveh2h',function(req,res){
                     if(num > 0){
                         if(elem[0] === "@"){
                             var pLink = "";
-                            var partstr = JSON.stringify({"name": elem.substring(1),"meetingId":meetingID});
+                            var partstr ={"name": elem.substring(1),"meetingId":meetingID};
                             request({
                                 uri: apiUrl,
                                 method: 'POST',
@@ -153,7 +149,7 @@ app.post('/liveh2h',function(req,res){
                             
                         }else if(elem[0] === "#"){
                             var theID = meetingID.substring(0,3) + "-" + meetingID.substring(3,6)+ "-" + meetingID.substring(6);
-                            var gLink = meetingurl.substring(0,pointOne)+"?roomname="+theID;
+                            var gLink = response.body.data.serverURL+"/index.html?roomname="+theID;
                             PartURL += urlSlack + "&channel="+elem.substring(1);
                             PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you all have been invited: <'+gLink+'|Click here to join>"}]')
                             request.post(PartURL);
