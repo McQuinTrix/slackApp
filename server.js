@@ -133,7 +133,8 @@ app.post('/liveh2h',function(req,res){
                 //Participants
                 var PartURL = "";
                 arr.forEach(function(elem,num){
-                    if(num > 0){
+                    
+                    if((arr[0]==="meetnow" && num > 0) || (arr[0]!=="meetnow")){
                         if(elem[0] === "@"){
                             var pLink = "";
                             var partstr ={"name": elem.substring(1),"meetingId":meetingID};
@@ -144,8 +145,8 @@ app.post('/liveh2h',function(req,res){
                             }, function(err,resp){
                                 if(err){throw err;}
                                 
-                                pLink = response.body.data.meetingURL;
-                                
+                                pLink = resp.body.data.meetingURL;
+                                console.log(pLink);
                                 PartURL = urlSlack+"&channel=%40"+elem.substring(1)
                                 PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
                                 
@@ -159,7 +160,6 @@ app.post('/liveh2h',function(req,res){
                             PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you all have been invited: <'+gLink+'|Click here to join>"}]')
                             request.post(PartURL);
                         }
-                        
                     }
                 })
             })
