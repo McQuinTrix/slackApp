@@ -6,7 +6,8 @@ var request = require("request");
 var bodyParser = require('body-parser');
 var request = require('request');
 var app = express();
-var btoa = require('btoa')
+var btoa = require('btoa');
+var atob = require('atob');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -60,10 +61,7 @@ app.get('/authorize',function(req,res){
             client.query(theSelect, function(err,result){
                 //DELETE THE OLD VERSION IF FOUND---
                 if(err) throw err;
-                console.log(result);
                 if(result.rowCount > 0){
-                    console.log("ROW: "+result.rowCount);
-                    
                     client.query(theDelete, function(err,result){
                         if(err){console.error(err);}
                         else{
@@ -99,47 +97,79 @@ app.post('/liveh2h',function(req,res){
         if(arr[0] === "webinar"){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
-        }else if(arr[0] === "meetnow"){
+        }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#"){
             res.send("Creating a meeting and inviting others..");
-            var meetingID = random.integer(100000000, 999999999);
-            var requestJSON = {
-                "origin": "H2H",
-                "meeting_id": ""+meetingID,
-                "user_display_name": req.body.user_name.replace(/_/g, " ")
-            };
-            //https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png&username=LiveH2H&channel=''
-            requestJSON.host = "yes";
-            var base64JSON = btoa(encodeURIComponent(JSON.stringify(requestJSON)));
-            var hLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
-            var url = "https://slack.com/api/chat.postMessage?";
-                url += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
-                url += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png");
-                url += "&username=LiveH2H";
-            var HostURL = url + "&channel=%40"+req.body.user_name;
-                HostURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! Your meeting has been created: <'+hLink+'|Click here to join>"}]');
-            var PartURL = "";
-            //Host Messge
-            request.post(HostURL);
             
-            //Participants
-            requestJSON.host = "no";
-            arr.forEach(function(elem,num){
-                if(num > 0){
-                    if(elem[0] === "@"){
-                        requestJSON.user_display_name = elem.substring(1);
-                        base64JSON = btoa(encodeURIComponent(JSON.stringify(requestJSON)));
-                        var pLink = "https://meet1.liveh2h.com/launcher.html?p=" + base64JSON + "&b=true";
-                        PartURL += url+"&channel=%40"+requestJSON.user_display_name
-                        PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]')
-                    }else if(elem[0] === "#"){
-                        var theID = requestJSON.meeting_id.substring(0,3) + "-" + requestJSON.meeting_id.substring(3,6)+ "-" + requestJSON.meeting_id.substring(6);
-                        var gLink = "https://meet1.liveh2h.com/index.html?roomname="+theID;
-                        PartURL += url + "&channel="+elem.substring(1);
-                        PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you all have been invited: <'+gLink+'|Click here to join>"}]')
+            var apiUrl = "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
+                name = req.body.user_name.replace(/_/g, " "),
+                email = "",
+                //email = document.getElementById("meetform1").elements["emailfield"].value;
+                obj = {"name":name, "email":email},
+                objstr = JSON.stringify(obj),
+                meetingurl = "";
+            
+            //CALL TO API
+            request({
+                uri: apiUrl,
+                method: 'POST',
+                multipart:[{
+                    'content-type': 'application/json'
+                    , body: objstr
+                }]
+            },function(err,response,body){
+                if(err){throw err;}
+                meetingurl = response.data.meetingURL;
+                var pointOne = meetingurl.indexOf(".html?p=") + 8,
+                    pointTwo = meetingurl.indexOf("&b=true"),
+                    urlDecoded = JSON.parse(decodeURIComponent(atob(meetingurl.substring(pointOne,pointTwo)))),
+                    meetingID = urlDecoded.meeting_id;
+                
+                var hLink = response.data.meetingURL;
+            
+                var urlSlack = "https://slack.com/api/chat.postMessage?";
+                    urlSlack += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
+                    urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png");
+                    urlSlack += "&username=LiveH2H";
+                
+                var HostURL = urlSlack + "&channel=%40"+req.body.user_name;
+                    HostURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! Your meeting has been created: <'+hLink+'|Click here to join>"}]');
+                //Host Messge
+                request.post(HostURL);
+
+                //Participants
+                var PartURL = "";
+                arr.forEach(function(elem,num){
+                    if(num > 0){
+                        if(elem[0] === "@"){
+                            var pLink = "";
+                            var partstr = {"name": elem.substring(1),"meetingId":meetingID}
+                            request({
+                                uri: apiUrl,
+                                method: 'POST',
+                                multipart:[{
+                                    'content-type': 'application/json'
+                                    , body: partstr
+                                }]
+                            }, function(err,resp){
+                                PartURL += urlSlack+"&channel=%40"+elem.substring(1)
+                                PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
+                                request.post(PartURL);
+                            })
+                            
+                        }else if(elem[0] === "#"){
+                            var theID = meetingID.substring(0,3) + "-" + meetingID.substring(3,6)+ "-" + meetingID.substring(6);
+                            var gLink = meetingurl.substring(0,pointOne)+"?roomname="+theID;
+                            PartURL += urlSlack + "&channel="+elem.substring(1);
+                            PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you all have been invited: <'+gLink+'|Click here to join>"}]')
+                            request.post(PartURL);
+                        }
+                        
                     }
-                    request.post(PartURL);
-                }
+                })
             })
+            
+            //https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png&username=LiveH2H&channel=''
+            
         }else if(arr[0] === "help"){
             res.send("Help Command");
         }else{

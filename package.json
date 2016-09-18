@@ -2,6 +2,7 @@
   "name": "SlackTest",
   "main": "server.js",
   "dependencies": {
+    "atob": "^2.0.3",
     "body-parser": "^1.14.2",
     "btoa": "^1.1.2",
     "express": "latest",
