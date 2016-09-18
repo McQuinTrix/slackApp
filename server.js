@@ -118,6 +118,7 @@ app.post('/liveh2h',function(req,res){
                 }]
             },function(err,response,body){
                 if(err){throw err;}
+                console.log(response);
                 meetingurl = response.data.meetingURL;
                 var pointOne = meetingurl.indexOf(".html?p=") + 8,
                     pointTwo = meetingurl.indexOf("&b=true"),
