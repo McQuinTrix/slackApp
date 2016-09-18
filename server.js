@@ -104,10 +104,10 @@ app.post('/liveh2h',function(req,res){
                 name = req.body.user_name.replace(/_/g, " "),
                 email = "",
                 //email = document.getElementById("meetform1").elements["emailfield"].value;
-                obj = {"name":name, "email":email},
+                obj = {name:name, email:email},
                 objstr = JSON.stringify(obj),
                 meetingurl = "";
-            console.log(typeof objstr,"110");
+            console.log(objstr);
             //CALL TO API
             request({
                 uri: apiUrl,
