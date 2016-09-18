@@ -26,11 +26,6 @@ pg.defaults.ssl = true;
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   if (err) throw err;
   console.log('Connected to postgres! Getting schemas...');
-
-  client.query('SELECT * FROM slack.tokens;')
-    .on('row', function(row) {
-      console.log(JSON.stringify(row));
-    });
 });
 
 //port for Heroku
@@ -39,51 +34,61 @@ app.get('/',function(req,res){
 	res.send('Running');
 });
 
+//Authorize
 app.get('/authorize',function(req,res){
     var str = "";
     var code = req.query.code;
-    console.log(req.query.code);
+    //AUTHORIZATION CODE VERIFICATION
     request.post("https://slack.com/api/oauth.access?client_id=72362934594.72343901492&client_secret=774325bbe3f942efb71d5db978eb5a4b&code="+code,function(err,resp,body){
+        
         var json = JSON.parse(body);
         var access_token = json.access_token,
             user_id = json.user_id,
             team_name = json.team_name,
             team_id = json.team_id,
             bot_user_id = json.bot.bot_user_id,
-            bot_access_token = json.bot.bot_access_token
-        console.log(team_id,access_token,team_name,bot_user_id,bot_access_token);
-        var theString = "INSERT INTO slack.tokens (team_id,access_token,team_name,bot_user_id,bot_access_token) VALUES ('";
-            theString += team_id +"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');"
+            bot_access_token = json.bot.bot_access_token;
+        //QUERIES----
+        var theSelect = "SELECT * FROM slack.tokens WHERE team_id =='"+team_id+"'",
+            theDelete = "DELETE FROM slack.tokens WHERE team_id =='"+team_id+"'",
+            theString = "INSERT INTO slack.tokens (team_id,access_token,team_name,bot_user_id,bot_access_token) VALUES ('";
+        theString += team_id +"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');"
+        //-----------
+        //EXECUTING QUERIES---
+            //CONNECTING TO DB----
         pg.connect(process.env.DATABASE_URL, function(err,client,done){
-            client.query(theString, function(err,result){
-                done();
-                if(err){console.error(err);}
-                else{console.log(result);}
+            client.query(theSelect, function(err,result){
+                //DELETE THE OLD VERSION IF FOUND---
+                if(result.rowCount > 0){
+                    console.log("ROW: "+result.rowCount);
+                    client.query(theDelete, function(err,result){
+                        if(err){console.error(err);}
+                        else{
+                            //INSERTING TO TABLE slack.tokens
+                            client.query(theString, function(err,result){
+                                done();
+                                if(err){console.error(err);}
+                            })
+                            //-------------------
+                        }
+                    })
+                }else{
+                    //INSERTING TO TABLE slack.tokens
+                    client.query(theString, function(err,result){
+                        done();
+                        if(err){console.error(err);}
+                    })
+                    //-------------------
+                }
+                //----------------------------------
+                
             })
-        })
+        });
+        //--------------------
     })
 })
 
-app.post('/hipchat',function(req,res){
-    var json = {
-        "color": "green",
-        "message": JSON.stringify(req),
-        "notify": false,
-        "message_format": "text"
-    }
-    request({
-        url: "https://devliveh2h.hipchat.com/v2/room/3119009/notification?auth_token=FLRZkAPekTGr89ZjP61lYm1kJnzOUf8TpdyVIBYX",
-        method: "POST",
-        json: json
-    },function(err,resp,body){
-        if(err){
-            console.log(err);
-        }else{
-            console.log(resp.statusCode, body);
-        }
-    })
-})
-
+//Slash Command
 app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" "),
         thisChannel = req.body.channel_id;
@@ -139,7 +144,28 @@ app.post('/liveh2h',function(req,res){
 	
 });
 
+//Listening Command
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
     
+//Hipchat Command
+app.post('/hipchat',function(req,res){
+    var json = {
+        "color": "green",
+        "message": JSON.stringify(req),
+        "notify": false,
+        "message_format": "text"
+    }
+    request({
+        url: "https://devliveh2h.hipchat.com/v2/room/3119009/notification?auth_token=FLRZkAPekTGr89ZjP61lYm1kJnzOUf8TpdyVIBYX",
+        method: "POST",
+        json: json
+    },function(err,resp,body){
+        if(err){
+            console.log(err);
+        }else{
+            console.log(resp.statusCode, body);
+        }
+    })
+})
