@@ -170,6 +170,7 @@ app.post('/liveh2h',function(req,res){
         }else if(arr[0] === "help"){
             res.send("Help Command");
         }else if(arr[0] === "join"){
+            res.send("Creating your link...");
             var partstr ={"name": req.body.user_name.replace(/_/g, " ") ,"meetingId":arr[1].replace(/-/g,"")};
             request({
                 uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
@@ -182,6 +183,8 @@ app.post('/liveh2h',function(req,res){
                 console.log(pLink);
                 PartURL = urlSlack+"&channel=%40"+req.body.user_name;
                 PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
+                
+                request.post(PartURL);
             });
         }else{
             res.send("I am sorry I didn't quite catch that! Type ```/liveh2h help``` for list of available commands.");
