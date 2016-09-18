@@ -52,8 +52,8 @@ app.get('/authorize',function(req,res){
             bot_user_id = json.bot.bot_user_id,
             bot_access_token = json.bot.bot_access_token
         console.log(team_id,access_token,team_name,bot_user_id,bot_access_token);
-        var theString = "INSERT INTO slack.tokens (team_id,access_token,team_name,bot_user_id,bot_access_token) VALUES (";
-            theString += team_id +", "+access_token+", "+team_name+", "+bot_user_id+", "+bot_access_token+");"
+        var theString = "INSERT INTO slack.tokens (team_id,access_token,team_name,bot_user_id,bot_access_token) VALUES ('";
+            theString += team_id +"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');"
         pg.connect(process.env.DATABASE_URL, function(err,client,done){
             client.query(theString, function(err,result){
                 done();
