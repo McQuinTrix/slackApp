@@ -140,7 +140,7 @@ app.post('/liveh2h',function(req,res){
                             console.log(meetingID)
                             var partstr ={"name": elem.substring(1),"meetingId":meetingID};
                             request({
-                                uri: apiUrl,
+                                uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
                                 method: 'POST',
                                 json: partstr
                             }, function(err,resp){
