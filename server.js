@@ -107,7 +107,7 @@ app.post('/liveh2h',function(req,res){
                 obj = {"name":name, "email":email},
                 objstr = JSON.stringify(obj),
                 meetingurl = "";
-            console.log(objstr);
+            console.log(typeof objstr,"110");
             //CALL TO API
             request({
                 uri: apiUrl,
