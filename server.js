@@ -116,7 +116,7 @@ app.post('/liveh2h',function(req,res){
                 console.log(response.body);
                 meetingurl = response.body.data.meetingURL;
                 var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
-                    meetingID = urlDecoded.meeting_id;
+                    meetingID = response.body.data.meetingId;
                 
                 var hLink = response.body.data.meetingURL;
             
@@ -142,8 +142,13 @@ app.post('/liveh2h',function(req,res){
                                 method: 'POST',
                                 json: partstr
                             }, function(err,resp){
-                                PartURL += urlSlack+"&channel=%40"+elem.substring(1)
+                                if(err){throw err;}
+                                
+                                pLink = response.body.data.meetingURL;
+                                
+                                PartURL = urlSlack+"&channel=%40"+elem.substring(1)
                                 PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
+                                
                                 request.post(PartURL);
                             })
                             
