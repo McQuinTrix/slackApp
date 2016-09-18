@@ -100,7 +100,7 @@ app.post('/liveh2h',function(req,res){
         }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#"){
             res.send("Creating a meeting and inviting others..");
             
-            var apiUrl = "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
+            var apiUrl = "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/instant",
                 name = req.body.user_name.replace(/_/g, " "),
                 email = "",
                 //email = document.getElementById("meetform1").elements["emailfield"].value;
