@@ -46,7 +46,7 @@ app.get('/authorize',function(req,res){
     request.post("https://slack.com/api/oauth.access?client_id=72362934594.72343901492&client_secret=774325bbe3f942efb71d5db978eb5a4b&code="+code,function(err,resp,body){
         console.log(body);
         var json = JSON.stringify(body);
-        console.log(json);
+        console.log(typeof body);
         if(typeof json.bot === "object"){
             console.log(json.bot.bot_user_id);
         }else{
