@@ -195,11 +195,13 @@ app.post('/liveh2h',function(req,res){
                 json: partstr
             }, function(err,resp){
                 if(err){throw err;}
-                console.log(resp.body);
-                pLink = resp.body.data.meetingURL;
-                console.log(pLink);
                 PartURL = urlSlack+"&channel=%40"+req.body.user_name;
-                PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
+                if(resp.body.returnCode === 14){
+                    PartURL += "&text=Meeting Not Found!";
+                }else{
+                    pLink = resp.body.data.meetingURL;
+                    PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
+                }
                 
                 request.post(PartURL);
             });
