@@ -59,8 +59,10 @@ app.get('/authorize',function(req,res){
         pg.connect(process.env.DATABASE_URL, function(err,client,done){
             client.query(theSelect, function(err,result){
                 //DELETE THE OLD VERSION IF FOUND---
+                console.log(result);
                 if(result.rowCount > 0){
                     console.log("ROW: "+result.rowCount);
+                    
                     client.query(theDelete, function(err,result){
                         if(err){console.error(err);}
                         else{
@@ -72,6 +74,7 @@ app.get('/authorize',function(req,res){
                             //-------------------
                         }
                     })
+                    
                 }else{
                     //INSERTING TO TABLE slack.tokens
                     client.query(theString, function(err,result){
