@@ -59,6 +59,7 @@ app.get('/authorize',function(req,res){
         pg.connect(process.env.DATABASE_URL, function(err,client,done){
             client.query(theSelect, function(err,result){
                 //DELETE THE OLD VERSION IF FOUND---
+                if(err) throw err;
                 console.log(result);
                 if(result.rowCount > 0){
                     console.log("ROW: "+result.rowCount);
