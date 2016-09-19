@@ -25,7 +25,7 @@ var pg = require('pg');
 pg.defaults.ssl = true;
 pg.connect(process.env.DATABASE_URL, function(err, client) {
   if (err) throw err;
-  console.log('Connected to postgres! Getting schemas...');
+  //console.log('Connected to postgres! Getting schemas...');
 });
 
 //port for Heroku
@@ -110,6 +110,7 @@ app.post('/liveh2h',function(req,res){
                 //email = document.getElementById("meetform1").elements["emailfield"].value;
                 obj = {name:name, email:email},
                 meetingurl = "";
+            console.log(name);
             //CALL TO API
             request({
                 uri: apiUrl,
@@ -117,11 +118,9 @@ app.post('/liveh2h',function(req,res){
                 json: obj
             },function(err,response,body){
                 if(err){throw err;}
-                console.log(response.body);
                 meetingurl = response.body.data.meetingURL;
                 var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
                     meetingID = response.body.data.meetingId;
-                console.log(meetingID)
                 var hLink = response.body.data.meetingURL;
                 
                 var HostURL = urlSlack + "&channel=%40"+req.body.user_name;
@@ -144,9 +143,8 @@ app.post('/liveh2h',function(req,res){
                                 json: partstr
                             }, function(err,resp){
                                 if(err){throw err;}
-                                
+                                console.log("Invitee: "+elem.substring(1));
                                 pLink = resp.body.data.meetingURL;
-                                console.log(pLink);
                                 PartURL = urlSlack+"&channel=%40"+elem.substring(1)
                                 PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
                                 
