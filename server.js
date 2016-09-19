@@ -187,7 +187,7 @@ app.post('/liveh2h',function(req,res){
             })
 
         }else if(arr[0] === "join"){
-            res.send("Creating your link...");
+            res.send("Creating meeting link - lookout for slackbot message!");
             var partstr ={"name": req.body.user_name.replace(/_/g, " ") ,"meetingId":arr[1].replace(/-/g,"")};
             request({
                 uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
@@ -200,7 +200,7 @@ app.post('/liveh2h',function(req,res){
                     PartURL += "&text=Meeting Not Found!";
                 }else{
                     pLink = resp.body.data.meetingURL;
-                    PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
+                    PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! <'+pLink+'|Click here to join>"}]');
                 }
                 
                 request.post(PartURL);
