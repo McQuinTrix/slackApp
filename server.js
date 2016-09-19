@@ -176,7 +176,7 @@ app.post('/liveh2h',function(req,res){
                     "fallback": "/liveh2h (@username | #channel) | /liveh2h meetnow (@username | #channel)| /liveh2h join xxx-xxx-xxx(9 Digit Meeting Number) | /liveh2h help",
                     title: "LiveH2H Commands:",
                     "mrkdwn_in":["text"],
-                    "text": ":small_blue_diamond:`/liveh2h [@username | #channel]` Create a meeting and invite others using username or channel name \n:small_blue_diamond: `/liveh2h meetnow [@username | #channel]` Create a meeting and invite others using username or channel name \n :small_blue_diamond: `/liveh2h join xxx-xxx-xxx`Join a meeting using 9-digit meeting id \n :small_blue_diamond: `/liveh2h help` Lists available commands. \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
+                    "text": ":small_blue_diamond:`/liveh2h [@username | #channel]` Create a meeting and invite others using username or channel name \n:small_blue_diamond: `/liveh2h meetnow [@username | #channel]` Create a meeting and invite others using username or channel name \n :small_blue_diamond: `/liveh2h join xxx-xxx-xxx` Join a meeting using 9-digit meeting id \n :small_blue_diamond: `/liveh2h help` Lists available commands. \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
                     "footer": "LiveH2H",
                     "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png",
                     "ts": Date.now()
