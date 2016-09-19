@@ -95,7 +95,7 @@ app.post('/liveh2h',function(req,res){
 	var arr = req.body.text.split(" "),
         thisChannel = req.body.channel_id,
         urlSlack = "https://slack.com/api/chat.postMessage?";
-        urlSlack += "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339",
+        urlSlack += "token=xoxp-19710695585-28627574003-81044075074-a173d8a614",
         urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
         urlSlack += "&username=LiveH2H";
     
