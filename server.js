@@ -103,7 +103,7 @@ app.post('/liveh2h',function(req,res){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
         }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#"){
-            res.send("Creating a meeting and inviting others - lookout for slackbot message!");
+            res.send("Creating a meeting and inviting others - lookout for slackbot message to join the meeting!");
             
             var apiUrl = "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/instant",
                 name = req.body.user_name.replace(/_/g, " "),
@@ -126,7 +126,7 @@ app.post('/liveh2h',function(req,res){
                 var hLink = response.body.data.meetingURL;
                 
                 var HostURL = urlSlack + "&channel=%40"+req.body.user_name;
-                    HostURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! Your meeting has been created: <'+hLink+'|Click here to join>"}]');
+                    HostURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from LiveH2H!","text":"Hello! Your meeting has been created: <'+hLink+'|Click here to join>"}]');
                 //Host Messge
                 request.post(HostURL);
 
@@ -149,7 +149,7 @@ app.post('/liveh2h',function(req,res){
                                 pLink = resp.body.data.meetingURL;
                                 console.log(pLink);
                                 PartURL = urlSlack+"&channel=%40"+elem.substring(1)
-                                PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
+                                PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+pLink+'|Click here to join>"}]');
                                 
                                 request.post(PartURL);
                             })
@@ -158,7 +158,7 @@ app.post('/liveh2h',function(req,res){
                             //var theID = meetingID.substring(0,3) + "-" + meetingID.substring(3,6)+ "-" + meetingID.substring(6);
                             var gLink = "https://liveh2h.com/"+meetingID;
                             PartURL += urlSlack + "&channel="+elem.substring(1);
-                            PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+gLink+'|Click here to join>"}]')
+                            PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+gLink+'|Click here to join>"}]')
                             request.post(PartURL);
                         }
                     }
