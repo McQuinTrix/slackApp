@@ -103,7 +103,7 @@ app.post('/liveh2h',function(req,res){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
         }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#"){
-            res.send("Creating a meeting and inviting others..");
+            res.send("Creating a meeting and inviting others - lookout for slackbot message!");
             
             var apiUrl = "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/instant",
                 name = req.body.user_name.replace(/_/g, " "),
