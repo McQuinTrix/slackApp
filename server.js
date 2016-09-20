@@ -160,8 +160,7 @@ app.post('/liveh2h',function(req,res){
                     uri: apiUrl,
                     method: 'POST',
                     json: obj
-                },
-                        function(err,response,body){
+                },function(err,response,body){
                     if(err){throw err;}
                     meetingurl = response.body.data.meetingURL;
                     var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
@@ -173,7 +172,19 @@ app.post('/liveh2h',function(req,res){
                         HostURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from LiveH2H!","text":"Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join>"}]');
                     //Host Messge
                     request.post(HostURL);
+                    request.post(req.body.response_url,json:{
+                        "response_type": 'in_channel',
+                        "attachments": [{
+                            "fallback": "Meeting invite from LiveH2H!",
+                            "title" : "Meeting Invite:",
+                            "mrkdwn_in":["text"],
+                            "text": "Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join> \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
+                            "footer": "LiveH2H",
+                            "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
+                            "ts": Date.now()
+                        }],function(err,resp){
 
+                        })
                     //Participants
                     var PartURL = "";
 
@@ -252,7 +263,7 @@ app.post('/liveh2h',function(req,res){
                 request.post(PartURL);
             });
         }else{
-            res.send("I am sorry I didn't quite catch that! Type ```/liveh2h help``` for list of available commands.");
+            res.send("I am sorry I didn't quite catch that! Type `/liveh2h help` for list of available commands.");
         }
 	
 });
