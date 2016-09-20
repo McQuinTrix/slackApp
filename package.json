@@ -7,6 +7,7 @@
     "btoa": "^1.1.2",
     "express": "latest",
     "http": "latest",
+    "mysql": "^2.11.1",
     "pg": "6.1.0",
     "querystring": "latest",
     "request": "^2.74.0",
