@@ -20,6 +20,10 @@ BOT_USER_ID VARCHAR(100) NOT NULL,
 BOT_ACCESS_TOKEN VARCHAR(100) NOT NULL);
 */
 
+var interval = setInterval(function(){
+    request.post("https://protected-mesa-16983.herokuapp.com/liveh2h");
+},(1000*60)*20)
+
 var pg = require('pg');
 
 pg.defaults.ssl = true;
