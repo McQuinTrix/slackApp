@@ -174,7 +174,7 @@ app.post('/liveh2h',function(req,res){
                     //Host Messge
                     request.post(HostURL);
                     request.post(req.body.response_url,{json:{
-                        "response_type": 'in_channel',
+                        "response_type": "ephemeral",
                         "attachments": [{
                             "fallback": "Meeting invite from LiveH2H!",
                             "title" : "Meeting Invite:",
@@ -230,7 +230,7 @@ app.post('/liveh2h',function(req,res){
             res.setHeader('Content-Type', 'application/json');
             //res.send("LiveH2H Help!");
             res.send(JSON.stringify({
-                "response_type": 'in_channel',
+                "response_type": "ephemeral",
                 attachments: [{
                     "fallback": "/liveh2h (@username | #channel) | /liveh2h meetnow (@username | #channel)| /liveh2h join xxx-xxx-xxx(9 Digit Meeting Number) | /liveh2h help",
                     title: "LiveH2H Commands:",
