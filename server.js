@@ -169,7 +169,7 @@ app.post('/liveh2h',function(req,res){
                     var hLink = response.body.data.meetingURL;
                     var theID = meetingID.substring(0,3) + "-" + meetingID.substring(3,6)+ "-" + meetingID.substring(6);
                     //https://slack.com/api/im.list?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339
-                    var HostURL = urlSlack + "&channel=%40"+req.body.user_id;
+                    var HostURL = urlSlack + "&channel=%40"+req.body.user_name;
                         HostURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from LiveH2H!","text":"Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join>"}]');
                     //Host Messge
                     request.post(HostURL);
