@@ -21,7 +21,7 @@ var server;
 var heroku = true;
 var fs      = require('fs');
 var path    = require('path');
-var port    = 8094;
+var port    = process.env.PORT || 8094;
 var protocol = "https";
 var directory  = module.filename.substr(0, module.filename.lastIndexOf("/")); 
 
@@ -121,7 +121,7 @@ app.get('/authorize',function(req,res){
     })
 })
 var tutorToken = "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339";
-var devTeamToken = "token=xoxp-19710695585-28627574003-81044075074-a173d8a614";
+var devTeamToken = "xoxp-72362934594-72362934674-74712859188-7e4bab5339";
 var tokenUsed = devTeamToken;
 //Slash Command
 app.post('/liveh2h',function(req,res){
