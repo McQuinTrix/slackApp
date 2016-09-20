@@ -121,7 +121,7 @@ app.get('/authorize',function(req,res){
     })
 })
 var tutorToken = "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339";
-var devTeamToken = "xoxp-72362934594-72362934674-74712859188-7e4bab5339";
+var devTeamToken = "token=xoxp-72362934594-72362934674-81902220208-300d165db9a027b9b7cb810ebad5d7ea";
 var tokenUsed = devTeamToken;
 //Slash Command
 app.post('/liveh2h',function(req,res){
