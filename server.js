@@ -17,6 +17,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 /*** SERVER CERTIFICATES ***/
 /***************************/
 var server;
+//TURN OFF FOR MEETDEV1
+var heroku = true;
 var fs      = require('fs');
 var path    = require('path');
 var port    = 8094;
@@ -29,7 +31,7 @@ app.use(function(req, res, next) {  // CORS on ExpressJS (http://enable-cors.org
   next();
 });
 
-if (protocol == "http") {
+if (protocol == "http" || heroku) {
   server = require('http').Server(app);
 } else {
     var hskey  = fs.readFileSync('/opt/web/mybase/testcerts2/h2h.key');
