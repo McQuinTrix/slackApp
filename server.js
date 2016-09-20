@@ -182,7 +182,7 @@ app.post('/liveh2h',function(req,res){
                             "footer": "LiveH2H",
                             "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
                             "ts": Date.now()
-                        }],function(err,resp){
+                        }]},function(err,resp){
 
                         })
                     //Participants
