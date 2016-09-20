@@ -138,7 +138,7 @@ app.post('/liveh2h',function(req,res){
             res.send("Webinar not yet supported.");
             
         }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#"){
-            res.send("Creating a meeting and inviting others - lookout for slackbot message to join the meeting!");
+            res.send("Creating a meeting and inviting others!");
             //POST Request to get USER LIST
             request({
                 uri: "https://slack.com/api/users.list?token="+tokenUsed,
