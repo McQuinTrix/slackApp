@@ -95,7 +95,8 @@ app.get('/authorize',function(req,res){
 
 //Slash Command
 app.post('/liveh2h',function(req,res){
-	var arr = req.body.text.split(" "),
+    if(req.body.text !== undefined){
+        var arr = req.body.text.split(" "),
         thisChannel = req.body.channel_id,
         urlSlack = "https://slack.com/api/chat.postMessage?";
         urlSlack += "token=xoxp-19710695585-28627574003-81044075074-a173d8a614",
@@ -208,8 +209,10 @@ app.post('/liveh2h',function(req,res){
             });
         }else{
             res.send("I am sorry I didn't quite catch that! Type ```/liveh2h help``` for list of available commands.");
-        }
-	
+        }   
+    }else{
+        console.log("Timer");
+    }
 });
 
 //Listening Command
