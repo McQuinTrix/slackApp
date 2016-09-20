@@ -120,8 +120,8 @@ app.get('/authorize',function(req,res){
         //--------------------
     })
 })
-var tutorToken = "token=xoxp-19710695585-28627574003-81044075074-a173d8a614";
-var devTeamToken = "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339";
+var tutorToken = "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339";
+var devTeamToken = "token=xoxp-19710695585-28627574003-81044075074-a173d8a614";
 var tokenUsed = devTeamToken;
 //Slash Command
 app.post('/liveh2h',function(req,res){
