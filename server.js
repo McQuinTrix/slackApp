@@ -178,7 +178,7 @@ app.post('/liveh2h',function(req,res){
                             "fallback": "Meeting invite from LiveH2H!",
                             "title" : "Meeting Invite:",
                             "mrkdwn_in":["text"],
-                            "text": "Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join> \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
+                            "text": 'Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join> \n\n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>',
                             "footer": "LiveH2H",
                             "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
                             "ts": Date.now()
