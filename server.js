@@ -125,6 +125,7 @@ var devTeamToken = "token=xoxp-72362934594-72362934674-81902220208-300d165db9a02
 var tokenUsed = devTeamToken;
 //Slash Command
 app.post('/liveh2h',function(req,res){
+    var timeStamp = Math.floor((new Date).getTime()/1000);
 	var arr = req.body.text.split(" "),
         thisChannel = req.body.channel_id,
         urlSlack = "https://slack.com/api/chat.postMessage?";
@@ -181,7 +182,7 @@ app.post('/liveh2h',function(req,res){
                             "text": 'Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join> \n\n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>',
                             "footer": "LiveH2H",
                             "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
-                            "ts": Date.now()
+                            "ts": timeStamp
                         }]
                         }},function(err,resp){
 
@@ -237,7 +238,7 @@ app.post('/liveh2h',function(req,res){
                     "text": ":small_blue_diamond:`/liveh2h [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h @john @mary #general`)_ \n:small_blue_diamond: `/liveh2h meetnow [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h meetnow @john @mary #general`)_ \n :small_blue_diamond: `/liveh2h join xxx-xxx-xxx` Join a meeting using 9-digit meeting id _(For example: `/liveh2h join 123456789` or `/liveh2h join 123-456-789`)_ \n :small_blue_diamond: `/liveh2h help` Lists available commands \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
                     "footer": "LiveH2H",
                     "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
-                    "ts": Math.floor((new Date).getTime()/1000) 
+                    "ts": timeStamp 
                 }]
                 
             }},function(err,resp,body){
