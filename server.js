@@ -229,6 +229,7 @@ app.post('/liveh2h',function(req,res){
         }else if(arr[0] === "help"){
             res.setHeader('Content-Type', 'application/json');
             //res.send("LiveH2H Help!");
+            /*
             res.send(JSON.stringify({
                 "response_type": "ephemeral",
                 attachments: [{
@@ -239,10 +240,10 @@ app.post('/liveh2h',function(req,res){
                     "footer": "LiveH2H",
                     "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
                     "ts": timeStamp 
-                }]}));
-            /*request.post(req.body.response_url,{
+                }]}));*/
+            request.post(req.body.response_url,{
                 json:{
-                "response_type": 'in_channel',
+                "response_type": "ephemeral",
                 attachments: [{
                     "fallback": "/liveh2h (@username | #channel) | /liveh2h meetnow (@username | #channel)| /liveh2h join xxx-xxx-xxx(9 Digit Meeting Number) | /liveh2h help",
                     title: "LiveH2H Commands:",
@@ -256,7 +257,6 @@ app.post('/liveh2h',function(req,res){
             }},function(err,resp,body){
                 
             })
-            */
         }else if(arr[0] === "join"){
             res.send("Creating meeting link - lookout for slackbot message!");
             var partstr ={"name": req.body.user_name.replace(/_/g, " ") ,"meetingId":arr[1].replace(/-/g,"")};
