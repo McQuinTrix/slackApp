@@ -154,7 +154,6 @@ app.post('/liveh2h',function(req,res){
         urlSlack += tokenUsed,
         urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
         urlSlack += "&username=LiveH2H";
-        if()
         if(arr[0] === "webinar"){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
