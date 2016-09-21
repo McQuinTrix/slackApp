@@ -201,7 +201,7 @@ app.post('/liveh2h',function(req,res){
                         if((arr[0]==="meetnow" && num > 0) || (arr[0]!=="meetnow")){
                             if(elem[0] === "@"){
                                 var pLink = "";
-                                console.log(meetingID)
+                                console.log(meetingID);
                                 var partstr ={"name": elem.substring(1),"meetingId":meetingID};
                                 request({
                                     uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
@@ -232,7 +232,7 @@ app.post('/liveh2h',function(req,res){
                             }
                         }
                     })
-                    if(sendObj.email_addresses.length > 0){
+                    if(sendObj.email_addresses.length > 0 && false){
                         request({
                                 type: "POST",
                                 url: emailURL  + "h2h_data/h2h_invitees",
