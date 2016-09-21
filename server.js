@@ -63,6 +63,11 @@ app.get('/',function(req,res){
 	res.send('Running');
 });
 
+var dbObj = {};
+dbObj.getSelect(teamID){
+    return "SELECT * FROM h2h_ext_slack WHERE slack_team_id ='"+teamID+"'";
+}
+
 //Authorize
 app.get('/authorize',function(req,res){
     var str = "";
@@ -78,7 +83,7 @@ app.get('/authorize',function(req,res){
             bot_user_id = json.bot.bot_user_id,
             bot_access_token = json.bot.bot_access_token;
         //QUERIES----
-        var theSelect = "SELECT * FROM h2h_ext_slack WHERE slack_team_id ='"+team_id+"'",
+        var theSelect = dbObj.getSelect(team_id),
             theDelete = "DELETE FROM h2h_ext_slack WHERE slack_team_id ='"+team_id+"'",
             theInsert = "INSERT INTO h2h_ext_slack (slack_team_id,slack_token,slack_team_name,slack_bot_user_id,slack_bot_token) VALUES ('";
         theInsert += team_id+"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');";
@@ -87,13 +92,13 @@ app.get('/authorize',function(req,res){
             connection.query( theInsert, function(err,rows,field){
                 if (err) throw err;
                 console.log("done");
-                connection.query( theInsert, function(err,rows,field){
+                connection.query( theSelect, function(err,rows,field){
                     if(err) throw err;
                     console.log(rows);
                 })
             })
         }catch(e){
-            
+            console.log(e);
         }
         //-----------
         //EXECUTING QUERIES---
@@ -141,11 +146,15 @@ app.post('/liveh2h',function(req,res){
     var timeStamp = Math.floor((new Date).getTime()/1000);
 	var arr = req.body.text.split(" "),
         thisChannel = req.body.channel_id,
+        thisTeam = req.body.team_id,
         urlSlack = "https://slack.com/api/chat.postMessage?";
+        connection.query(dbObj.getSelect(thisTeam),function(err,rows,field){
+            console.log(rows);
+        })
         urlSlack += tokenUsed,
         urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
         urlSlack += "&username=LiveH2H";
-    
+        if()
         if(arr[0] === "webinar"){
             //res.setHeader('Content-Type', 'application/json')
             res.send("Webinar not yet supported.");
