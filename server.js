@@ -232,12 +232,16 @@ app.post('/liveh2h',function(req,res){
                             }
                         }
                     })
-                    if(sendObj.email_addresses.length > 0 && false){
-                        request({
+                    if(sendObj.email_addresses.length > 0){
+                        try{
+                            request({
                                 type: "POST",
-                                url: emailURL  + "h2h_data/h2h_invitees",
+                                url: emailURL  + "/h2h_data/h2h_invitees",
                                 json: sendObj
                             });
+                        }catch(e){
+                            console.log(e);
+                        }
                     }
                 })
                 })
