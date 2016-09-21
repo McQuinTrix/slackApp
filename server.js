@@ -223,11 +223,8 @@ app.post('/liveh2h',function(req,res){
                                 PartURL += urlSlack + "&channel="+elem.substring(1);
                                 PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+gLink+'|Click here to join>"}]')
                                 request.post(PartURL);
-                            }else if(elem){
-                                    
-                                if(emailRegex.test(elem)){
+                            }else if(emailRegex.test(elem)){
                                     sendObj.email_addresses = elem;
-                                }
                             }
                         }
                     })
@@ -239,7 +236,7 @@ app.post('/liveh2h',function(req,res){
                                 json: sendObj
                             },function(err,resp){
                                 if(err) console.log(err);
-                                console.log(resp);
+                                console.log(resp.body);
                             });
                         }catch(e){
                             console.log(e);
