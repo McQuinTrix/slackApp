@@ -149,7 +149,9 @@ app.post('/liveh2h',function(req,res){
         thisTeam = req.body.team_id,
         urlSlack = "https://slack.com/api/chat.postMessage?";
         connection.query(dbObj.getSelect(thisTeam),function(err,rows,field){
+            console.log(tokenUsed);
             tokenUsed = "token="+rows.slack_token;
+            console.log(tokenUsed);
             console.log(typeof rows);
             urlSlack += tokenUsed,
             urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
