@@ -120,7 +120,7 @@ app.get('/authorize',function(req,res){
         //--------------------
     })
 })
-var tutorToken = "token=xoxp-72362934594-72362934674-74712859188-7e4bab5339";
+var tutorToken = "token=xoxp-19710695585-28627574003-81044075074-a173d8a614";
 var devTeamToken = "token=xoxp-72362934594-72362934674-81902220208-300d165db9a027b9b7cb810ebad5d7ea";
 var tokenUsed = devTeamToken;
 //Slash Command
@@ -189,7 +189,12 @@ app.post('/liveh2h',function(req,res){
                         })
                     //Participants
                     var PartURL = "";
-
+                    var sendObj =  {
+                        "origin": "TMI",
+                        "meeting_id": meetingID,
+                        "email_addresses": []
+                    };
+                    var emailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
                     arr.forEach(function(elem,num){
 
                         if((arr[0]==="meetnow" && num > 0) || (arr[0]!=="meetnow")){
@@ -217,9 +222,22 @@ app.post('/liveh2h',function(req,res){
                                 PartURL += urlSlack + "&channel="+elem.substring(1);
                                 PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+gLink+'|Click here to join>"}]')
                                 request.post(PartURL);
+                            }else if(elem){
+                                    
+                                if(emailRegex.test(elem)){
+                                    sendObj.email_addresses = elem;
+                                }
+                                    
                             }
                         }
                     })
+                    if(sendObj.email_addresses.length > 0){
+                        request({
+                                type: "POST",
+                                url: apiServerUrl + "h2h_data/h2h_invitees",
+                                json: sendObj
+                            });
+                    }
                 })
                 })
             
@@ -228,7 +246,7 @@ app.post('/liveh2h',function(req,res){
             
         }else if(arr[0] === "help"){
             res.setHeader('Content-Type', 'application/json');
-            //res.send("LiveH2H Help!");
+            res.send("LiveH2H Help!");
             /*
             res.send(JSON.stringify({
                 "response_type": "ephemeral",
