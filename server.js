@@ -228,7 +228,6 @@ app.post('/liveh2h',function(req,res){
                                 if(emailRegex.test(elem)){
                                     sendObj.email_addresses = elem;
                                 }
-                                    
                             }
                         }
                     })
@@ -238,6 +237,9 @@ app.post('/liveh2h',function(req,res){
                                 type: "POST",
                                 url: emailURL  + "/h2h_data/h2h_invitees",
                                 json: sendObj
+                            },function(err,resp){
+                                if(err) console.log(err);
+                                console.log(resp);
                             });
                         }catch(e){
                             console.log(e);
