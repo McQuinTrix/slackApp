@@ -152,7 +152,7 @@ app.post('/liveh2h',function(req,res){
             console.log(tokenUsed);
             tokenUsed = "token="+rows.slack_token;
             console.log(tokenUsed);
-            console.log(typeof rows);
+            console.log(Object.keys(rows));
             urlSlack += tokenUsed,
             urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
             urlSlack += "&username=LiveH2H";
