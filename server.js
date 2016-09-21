@@ -149,180 +149,180 @@ app.post('/liveh2h',function(req,res){
         thisTeam = req.body.team_id,
         urlSlack = "https://slack.com/api/chat.postMessage?";
         connection.query(dbObj.getSelect(thisTeam),function(err,rows,field){
+            tokenUsed = "token="+rows.slack_token;
             console.log(typeof rows);
-        })
-        urlSlack += tokenUsed,
-        urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
-        urlSlack += "&username=LiveH2H";
-        if(arr[0] === "webinar"){
-            //res.setHeader('Content-Type', 'application/json')
-            res.send("Webinar not yet supported.");
-            
-        }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#"){
-            res.send("Creating a meeting and inviting others!");
-            //POST Request to get USER LIST
-            request({
-                uri: "https://slack.com/api/users.list?token="+tokenUsed,
-                method: "POST"
-            },function(errUList,responseUList, bodyUList){
-                if(errUList){
-                    throw errUList;
-                }
-                console.log(bodyUList);
-                
-                var apiUrl = "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/instant",
-                name = req.body.user_name.replace(/_/g, " "),
-                email = "",
-                obj = {name:name, email:email},
-                meetingurl = "";
-                
-                console.log(name);
-                //CALL TO API
+            urlSlack += tokenUsed,
+            urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
+            urlSlack += "&username=LiveH2H";
+            if(arr[0] === "webinar"){
+                //res.setHeader('Content-Type', 'application/json')
+                res.send("Webinar not yet supported.");
+
+            }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#"){
+                res.send("Creating a meeting and inviting others!");
+                //POST Request to get USER LIST
                 request({
-                    uri: apiUrl,
-                    method: 'POST',
-                    json: obj
-                },function(err,response,body){
-                    if(err){throw err;}
-                    var emailURL = response.body.data.serverURL;
-                    meetingurl = response.body.data.meetingURL;
-                    var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
-                        meetingID = response.body.data.meetingId;
-                    var hLink = response.body.data.meetingURL;
-                    var theID = meetingID.substring(0,3) + "-" + meetingID.substring(3,6)+ "-" + meetingID.substring(6);
-                    //https://slack.com/api/im.list?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339
-                    var HostURL = urlSlack + "&channel=%40"+req.body.user_name;
-                        HostURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from LiveH2H!","text":"Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join>"}]');
-                    //Host Messge
-                    request.post(HostURL);
-                    request.post(req.body.response_url,{json:{
-                        "response_type": "ephemeral",
-                        "attachments": [{
-                            "fallback": "Meeting invite from LiveH2H!",
-                            "title" : "Meeting Invite:",
-                            "mrkdwn_in":["text"],
-                            "text": 'Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join> \n\n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>',
-                            "footer": "LiveH2H",
-                            "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
-                            "ts": timeStamp
-                        }]
-                        }},function(err,resp){
+                    uri: "https://slack.com/api/users.list?token="+tokenUsed,
+                    method: "POST"
+                },function(errUList,responseUList, bodyUList){
+                    if(errUList){
+                        throw errUList;
+                    }
+                    console.log(bodyUList);
 
-                        })
-                    //Participants
-                    var PartURL = "";
-                    var sendObj =  {
-                        "origin": "TMI",
-                        "meeting_id": meetingID,
-                        "email_addresses": []
-                    };
-                    var emailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-                    arr.forEach(function(elem,num){
+                    var apiUrl = "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/instant",
+                    name = req.body.user_name.replace(/_/g, " "),
+                    email = "",
+                    obj = {name:name, email:email},
+                    meetingurl = "";
 
-                        if((arr[0]==="meetnow" && num > 0) || (arr[0]!=="meetnow")){
-                            if(elem[0] === "@"){
-                                var pLink = "";
-                                console.log(meetingID);
-                                var partstr ={"name": elem.substring(1),"meetingId":meetingID};
-                                request({
-                                    uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
-                                    method: 'POST',
-                                    json: partstr
-                                }, function(err,resp){
-                                    if(err){throw err;}
-                                    console.log("Invitee: "+elem.substring(1));
-                                    pLink = resp.body.data.meetingURL;
-                                    PartURL = urlSlack+"&channel=%40"+elem.substring(1)
-                                    PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting ('+theID+'), and you have been invited: <'+pLink+'|Click here to join>"}]');
+                    console.log(name);
+                    //CALL TO API
+                    request({
+                        uri: apiUrl,
+                        method: 'POST',
+                        json: obj
+                    },function(err,response,body){
+                        if(err){throw err;}
+                        var emailURL = response.body.data.serverURL;
+                        meetingurl = response.body.data.meetingURL;
+                        var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
+                            meetingID = response.body.data.meetingId;
+                        var hLink = response.body.data.meetingURL;
+                        var theID = meetingID.substring(0,3) + "-" + meetingID.substring(3,6)+ "-" + meetingID.substring(6);
+                        //https://slack.com/api/im.list?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339
+                        var HostURL = urlSlack + "&channel=%40"+req.body.user_name;
+                            HostURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from LiveH2H!","text":"Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join>"}]');
+                        //Host Messge
+                        request.post(HostURL);
+                        request.post(req.body.response_url,{json:{
+                            "response_type": "ephemeral",
+                            "attachments": [{
+                                "fallback": "Meeting invite from LiveH2H!",
+                                "title" : "Meeting Invite:",
+                                "mrkdwn_in":["text"],
+                                "text": 'Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join> \n\n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>',
+                                "footer": "LiveH2H",
+                                "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
+                                "ts": timeStamp
+                            }]
+                            }},function(err,resp){
 
+                            })
+                        //Participants
+                        var PartURL = "";
+                        var sendObj =  {
+                            "origin": "TMI",
+                            "meeting_id": meetingID,
+                            "email_addresses": []
+                        };
+                        var emailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                        arr.forEach(function(elem,num){
+
+                            if((arr[0]==="meetnow" && num > 0) || (arr[0]!=="meetnow")){
+                                if(elem[0] === "@"){
+                                    var pLink = "";
+                                    console.log(meetingID);
+                                    var partstr ={"name": elem.substring(1),"meetingId":meetingID};
+                                    request({
+                                        uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
+                                        method: 'POST',
+                                        json: partstr
+                                    }, function(err,resp){
+                                        if(err){throw err;}
+                                        console.log("Invitee: "+elem.substring(1));
+                                        pLink = resp.body.data.meetingURL;
+                                        PartURL = urlSlack+"&channel=%40"+elem.substring(1)
+                                        PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting ('+theID+'), and you have been invited: <'+pLink+'|Click here to join>"}]');
+
+                                        request.post(PartURL);
+                                    })
+
+                                }else if(elem[0] === "#"){
+                                    //;
+                                    var gLink = "https://liveh2h.com/"+meetingID;
+                                    PartURL += urlSlack + "&channel="+elem.substring(1);
+                                    PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+gLink+'|Click here to join>"}]')
                                     request.post(PartURL);
-                                })
-
-                            }else if(elem[0] === "#"){
-                                //;
-                                var gLink = "https://liveh2h.com/"+meetingID;
-                                PartURL += urlSlack + "&channel="+elem.substring(1);
-                                PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting, and you have been invited: <'+gLink+'|Click here to join>"}]')
-                                request.post(PartURL);
-                            }else if(emailRegex.test(elem)){
-                                    sendObj.email_addresses = elem;
+                                }else if(emailRegex.test(elem)){
+                                        sendObj.email_addresses = elem;
+                                }
+                            }
+                        })
+                        if(sendObj.email_addresses.length > 0){
+                            try{
+                                request({
+                                    type: "POST",
+                                    url: emailURL  + "/h2h_data/h2h_invitees",
+                                    json: sendObj
+                                },function(err,resp){
+                                    if(err) console.log(err);
+                                    console.log(resp.body);
+                                });
+                            }catch(e){
+                                console.log(e);
                             }
                         }
                     })
-                    if(sendObj.email_addresses.length > 0){
-                        try{
-                            request({
-                                type: "POST",
-                                url: emailURL  + "/h2h_data/h2h_invitees",
-                                json: sendObj
-                            },function(err,resp){
-                                if(err) console.log(err);
-                                console.log(resp.body);
-                            });
-                        }catch(e){
-                            console.log(e);
-                        }
+                    })
+
+
+                //https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png&username=LiveH2H&channel=''
+
+            }else if(arr[0] === "help"){
+                res.setHeader('Content-Type', 'application/json');
+                res.send("LiveH2H Help!");
+                /*
+                res.send(JSON.stringify({
+                    "response_type": "ephemeral",
+                    attachments: [{
+                        "fallback": "/liveh2h (@username | #channel) | /liveh2h meetnow (@username | #channel)| /liveh2h join xxx-xxx-xxx(9 Digit Meeting Number) | /liveh2h help",
+                        title: "LiveH2H Commands:",
+                        "mrkdwn_in":["text"],
+                        "text": ":small_blue_diamond:`/liveh2h [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h @john @mary #general`)_ \n:small_blue_diamond: `/liveh2h meetnow [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h meetnow @john @mary #general`)_ \n :small_blue_diamond: `/liveh2h join xxx-xxx-xxx` Join a meeting using 9-digit meeting id _(For example: `/liveh2h join 123456789` or `/liveh2h join 123-456-789`)_ \n :small_blue_diamond: `/liveh2h help` Lists available commands \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
+                        "footer": "LiveH2H",
+                        "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
+                        "ts": timeStamp 
+                    }]}));*/
+                request.post(req.body.response_url,{
+                    json:{
+                    "response_type": "ephemeral",
+                    attachments: [{
+                        "fallback": "/liveh2h (@username | #channel) | /liveh2h meetnow (@username | #channel)| /liveh2h join xxx-xxx-xxx(9 Digit Meeting Number) | /liveh2h help",
+                        title: "LiveH2H Commands:",
+                        "mrkdwn_in":["text"],
+                        "text": ":small_blue_diamond:`/liveh2h [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h @john @mary #general`)_ \n:small_blue_diamond: `/liveh2h meetnow [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h meetnow @john @mary #general`)_ \n :small_blue_diamond: `/liveh2h join xxx-xxx-xxx` Join a meeting using 9-digit meeting id _(For example: `/liveh2h join 123456789` or `/liveh2h join 123-456-789`)_ \n :small_blue_diamond: `/liveh2h help` Lists available commands \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
+                        "footer": "LiveH2H",
+                        "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
+                        "ts": timeStamp 
+                    }]
+
+                }},function(err,resp,body){
+
+                })
+            }else if(arr[0] === "join"){
+                res.send("Creating meeting link - lookout for slackbot message!");
+                var partstr ={"name": req.body.user_name.replace(/_/g, " ") ,"meetingId":arr[1].replace(/-/g,"")};
+                request({
+                    uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
+                    method: 'POST',
+                    json: partstr
+                }, function(err,resp){
+                    if(err){throw err;}
+                    PartURL = urlSlack+"&channel=%40"+req.body.user_name;
+                    if(resp.body.returnCode === 14){
+                        PartURL += "&text=Meeting Not Found!";
+                    }else{
+                        pLink = resp.body.data.meetingURL;
+                        PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! <'+pLink+'|Click here to join>"}]');
                     }
-                })
-                })
-            
-            
-            //https://slack.com/api/chat.postMessage?token=xoxp-72362934594-72362934674-74712859188-7e4bab5339&icon_url=https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-08-30/74712263348_338d6d654f54bdcb4685_48.png&username=LiveH2H&channel=''
-            
-        }else if(arr[0] === "help"){
-            res.setHeader('Content-Type', 'application/json');
-            res.send("LiveH2H Help!");
-            /*
-            res.send(JSON.stringify({
-                "response_type": "ephemeral",
-                attachments: [{
-                    "fallback": "/liveh2h (@username | #channel) | /liveh2h meetnow (@username | #channel)| /liveh2h join xxx-xxx-xxx(9 Digit Meeting Number) | /liveh2h help",
-                    title: "LiveH2H Commands:",
-                    "mrkdwn_in":["text"],
-                    "text": ":small_blue_diamond:`/liveh2h [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h @john @mary #general`)_ \n:small_blue_diamond: `/liveh2h meetnow [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h meetnow @john @mary #general`)_ \n :small_blue_diamond: `/liveh2h join xxx-xxx-xxx` Join a meeting using 9-digit meeting id _(For example: `/liveh2h join 123456789` or `/liveh2h join 123-456-789`)_ \n :small_blue_diamond: `/liveh2h help` Lists available commands \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
-                    "footer": "LiveH2H",
-                    "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
-                    "ts": timeStamp 
-                }]}));*/
-            request.post(req.body.response_url,{
-                json:{
-                "response_type": "ephemeral",
-                attachments: [{
-                    "fallback": "/liveh2h (@username | #channel) | /liveh2h meetnow (@username | #channel)| /liveh2h join xxx-xxx-xxx(9 Digit Meeting Number) | /liveh2h help",
-                    title: "LiveH2H Commands:",
-                    "mrkdwn_in":["text"],
-                    "text": ":small_blue_diamond:`/liveh2h [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h @john @mary #general`)_ \n:small_blue_diamond: `/liveh2h meetnow [@username | #channel]` Create a meeting and invite others using username or channel name _(For example: `/liveh2h meetnow @john @mary #general`)_ \n :small_blue_diamond: `/liveh2h join xxx-xxx-xxx` Join a meeting using 9-digit meeting id _(For example: `/liveh2h join 123456789` or `/liveh2h join 123-456-789`)_ \n :small_blue_diamond: `/liveh2h help` Lists available commands \n For more features, visit: <https://www.liveh2h.com/|LiveH2H.com>",
-                    "footer": "LiveH2H",
-                    "footer_icon": "https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png",
-                    "ts": timeStamp 
-                }]
-                
-            }},function(err,resp,body){
-                
-            })
-        }else if(arr[0] === "join"){
-            res.send("Creating meeting link - lookout for slackbot message!");
-            var partstr ={"name": req.body.user_name.replace(/_/g, " ") ,"meetingId":arr[1].replace(/-/g,"")};
-            request({
-                uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
-                method: 'POST',
-                json: partstr
-            }, function(err,resp){
-                if(err){throw err;}
-                PartURL = urlSlack+"&channel=%40"+req.body.user_name;
-                if(resp.body.returnCode === 14){
-                    PartURL += "&text=Meeting Not Found!";
-                }else{
-                    pLink = resp.body.data.meetingURL;
-                    PartURL += '&attachments=' + encodeURIComponent('[{"text":"Hello! <'+pLink+'|Click here to join>"}]');
-                }
-                
-                request.post(PartURL);
-            });
-        }else{
-            res.send("I am sorry I didn't quite catch that! Type `/liveh2h help` for list of available commands.");
-        }
-	
+
+                    request.post(PartURL);
+                });
+            }else{
+                res.send("I am sorry I didn't quite catch that! Type `/liveh2h help` for list of available commands.");
+            }
+        })
 });
 
 //Listening Command
