@@ -142,6 +142,7 @@ app.get('/authorize',function(req,res){
 var tutorToken = "token=xoxp-19710695585-28627574003-81044075074-a173d8a614";
 var devTeamToken = "token=xoxp-72362934594-72362934674-81902220208-300d165db9a027b9b7cb810ebad5d7ea";
 var tokenUsed = devTeamToken;
+
 //Slash Command
 app.post('/liveh2h',function(req,res){
     var timeStamp = Math.floor((new Date).getTime()/1000);
