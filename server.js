@@ -163,6 +163,7 @@ app.post('/liveh2h',function(req,res){
                     json: obj
                 },function(err,response,body){
                     if(err){throw err;}
+                    console.log(response.body.data);
                     meetingurl = response.body.data.meetingURL;
                     var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
                         meetingID = response.body.data.meetingId;
