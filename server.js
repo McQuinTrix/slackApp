@@ -78,8 +78,8 @@ app.get('/authorize',function(req,res){
             bot_user_id = json.bot.bot_user_id,
             bot_access_token = json.bot.bot_access_token;
         //QUERIES----
-        var theSelect = "SELECT * FROM h2h_ext_slack WHERE team_id ='"+slack_team_id+"'",
-            theDelete = "DELETE FROM h2h_ext_slack WHERE team_id ='"+slack_team_id+"'",
+        var theSelect = "SELECT * FROM h2h_ext_slack WHERE slack_team_id ='"+team_id+"'",
+            theDelete = "DELETE FROM h2h_ext_slack WHERE slack_team_id ='"+team_id+"'",
             theInsert = "INSERT INTO h2h_ext_slack (slack_team_id,slack_token,slack_team_name,slack_bot_user_id,slack_bot_token) VALUES ('";
         theInsert += team_id+"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');";
         
