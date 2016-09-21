@@ -158,12 +158,12 @@ app.post('/liveh2h',function(req,res){
                 console.log(name);
                 //CALL TO API
                 request({
-                    uri: apiUrl,
+                    uri: inviteUrl,
                     method: 'POST',
                     json: obj
                 },function(err,response,body){
                     if(err){throw err;}
-                    console.log(response.body.data);
+                    var apiUrl = response.body.data.serverURL;
                     meetingurl = response.body.data.meetingURL;
                     var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
                         meetingID = response.body.data.meetingId;
@@ -235,7 +235,7 @@ app.post('/liveh2h',function(req,res){
                     if(sendObj.email_addresses.length > 0){
                         request({
                                 type: "POST",
-                                url: apiServerUrl + "h2h_data/h2h_invitees",
+                                url: inviteUrl + "h2h_data/h2h_invitees",
                                 json: sendObj
                             });
                     }
