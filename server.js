@@ -74,7 +74,8 @@ app.get('/authorize',function(req,res){
     var code = req.query.code;
     //AUTHORIZATION CODE VERIFICATION
     request.post("https://slack.com/api/oauth.access?client_id=72362934594.72343901492&client_secret=774325bbe3f942efb71d5db978eb5a4b&code="+code,function(err,resp,body){
-        
+        if(err) throw err;
+        console.log(body);
         var json = JSON.parse(body);
         var access_token = json.access_token,
             user_id = json.user_id,
