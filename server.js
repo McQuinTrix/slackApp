@@ -64,7 +64,7 @@ app.get('/',function(req,res){
 });
 
 var dbObj = {};
-dbObj.getSelect(teamID){
+dbObj.getSelect = function(teamID){
     return "SELECT * FROM h2h_ext_slack WHERE slack_team_id ='"+teamID+"'";
 }
 
