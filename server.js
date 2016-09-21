@@ -78,10 +78,23 @@ app.get('/authorize',function(req,res){
             bot_user_id = json.bot.bot_user_id,
             bot_access_token = json.bot.bot_access_token;
         //QUERIES----
-        var theSelect = "SELECT * FROM slack.tokens WHERE team_id ='"+team_id+"'",
-            theDelete = "DELETE FROM slack.tokens WHERE team_id ='"+team_id+"'",
-            theString = "INSERT INTO slack.tokens (team_id,access_token,team_name,bot_user_id,bot_access_token) VALUES ('";
-        theString += team_id +"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');"
+        var theSelect = "SELECT * FROM h2h_ext_slack WHERE team_id ='"+slack_team_id+"'",
+            theDelete = "DELETE FROM h2h_ext_slack WHERE team_id ='"+slack_team_id+"'",
+            theInsert = "INSERT INTO h2h_ext_slack (slack_team_id,slack_token,slack_team_name,slack_bot_user_id,slack_bot_token) VALUES ('";
+        theInsert += team_id+"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');";
+        
+        try{
+            connection.query( theInsert, function(err,rows,field){
+                if (err) throw err;
+                console.log("done");
+                connection.query( theInsert, function(err,rows,field){
+                    if(err) throw err;
+                    console.log(rows);
+                })
+            })
+        }catch(e){
+            
+        }
         //-----------
         //EXECUTING QUERIES---
             //CONNECTING TO DB----
