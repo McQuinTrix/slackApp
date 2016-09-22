@@ -161,7 +161,7 @@ app.post('/liveh2h',function(req,res){
                 //res.setHeader('Content-Type', 'application/json')
                 res.send("Webinar not yet supported.");
 
-            }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#" || ){
+            }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#" ||req.body.text.trim().length === 0 ){
                 res.send("Creating a meeting and inviting others!");
                 //POST Request to get USER LIST
                 request({
