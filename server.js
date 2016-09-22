@@ -12,6 +12,12 @@ var mysql = require('mysql');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(path.join(__dirname, 'public')));
+var engine = require('consolidate');
+
+app.set('views', __dirname + '/views');
+app.engine('html', engine.mustache);
+app.set('view engine', 'html');
 
 /***************************/
 /*** SERVER CERTIFICATES ***/
