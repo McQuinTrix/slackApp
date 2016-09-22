@@ -200,7 +200,7 @@ app.post('/liveh2h',function(req,res){
                     //CALL TO API
                     request({
                         uri: apiUrl,
-                        referrer: "Slack - "+teamName,
+                        referer: "Slack - "+teamName,
                         method: 'POST',
                         json: obj
                     },function(err,response,body){
@@ -256,7 +256,7 @@ app.post('/liveh2h',function(req,res){
                                     var partstr ={"name": elem.substring(1),"meetingId":meetingID};
                                     request({
                                         uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
-                                        referrer: "Slack - "+teamName,
+                                        referer: "Slack - "+teamName,
                                         method: 'POST',
                                         json: partstr
                                     }, function(err,resp){
