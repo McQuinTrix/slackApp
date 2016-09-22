@@ -13,7 +13,7 @@ var mysql = require('mysql');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/');
 app.engine('html', require('ejs').renderFile);
 
 /***************************/
@@ -102,13 +102,11 @@ app.get('/authorize',function(req,res){
                 if(rows.length === 0){
                     connection.query( theInsert, function(err,rows,field){
                         if(err) throw err;
-                        console.log(rows);
                         res.redirect('/');
                     })
                 }else{
                     connection.query( theUpdate, function(err,rows,field){
                         if(err) throw err;
-                        console.log(rows);
                         res.redirect('/');
                     })   
                 }
