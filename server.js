@@ -96,8 +96,7 @@ app.get('/authorize',function(req,res){
         try{
             connection.query( theSelect, function(err,rows,field){
                 if (err) throw err;
-                console.log("HELLOOOOOOO: "+rows.length);
-                if(rows.length > 0){
+                if(rows.length === 0){
                     connection.query( theInsert, function(err,rows,field){
                         if(err) throw err;
                         console.log(rows);
