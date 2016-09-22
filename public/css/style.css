@@ -50,9 +50,12 @@ table {
 	border-spacing: 0;
 }
 /* ------------------------------------------ */
-.nav-container,.sec-container{
+.nav-container,.sec-container,footer{
     width: 980px;
     margin: 0 auto;
+}
+.sec-container,footer{
+    text-align: left;
 }
 nav{
     background-color: black;
@@ -92,11 +95,10 @@ code{
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
 .head-h2{
-    padding: 0.8em 1.4em;
+    padding: 0.4em 0em 0;
     width: auto;
     display: inline-block;
-    color: white;
-    background-color: black;
+    color: black;
     border-radius: 10px;
     font-size: 2em;
     margin-bottom: 0.8em;
@@ -168,19 +170,20 @@ code{
 section{
     background: white;
 }
+ul{
+   font-family:  "Lato", sans-serif;
+}
 li:nth-child(odd){
-    font-size: 1.2em;
-    font-weight: bold;
+    font-size: 1em;
+    font-weight: lighter;
 }
 li:nth-child(odd):before{
-    content:'\00B7';
     
 }
 li:nth-child(even){
     margin-bottom: 1em;
 }
 footer{
-    text-align: center;
     padding: 1.2em;
 }
 footer a{
