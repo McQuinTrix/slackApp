@@ -88,15 +88,26 @@ app.get('/authorize',function(req,res){
             theDelete = "DELETE FROM h2h_ext_slack WHERE slack_team_id ='"+team_id+"'",
             theInsert = "INSERT INTO h2h_ext_slack (slack_team_id,slack_token,slack_team_name,slack_bot_user_id,slack_bot_token) VALUES ('";
         theInsert += team_id+"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');";
+        var theUpdate = "UPDATE h2h_ext_slack SET slack_token='"+access_token+"'"
+                        + ", slack_team_name='"+team_name+"'"
+                        + ", slack_bot_user_id='"+bot_user_id+"'"
+                        + ", slack_bot_token='"+bot_access_token+"'"
+                        + " WHERE slack_team_id = '"+team_id+"'";
         
         try{
-            connection.query( theInsert, function(err,rows,field){
+            connection.query( theSelect, function(err,rows,field){
                 if (err) throw err;
-                console.log("done");
-                connection.query( theSelect, function(err,rows,field){
-                    if(err) throw err;
-                    console.log(rows);
-                })
+                if(rows.length > 0){
+                    connection.query( theInsert, function(err,rows,field){
+                        if(err) throw err;
+                        console.log(rows);
+                    })
+                }else{
+                    connection.query( theUpdate, function(err,rows,field){
+                        if(err) throw err;
+                        console.log(rows);
+                    })   
+                }
             })
         }catch(e){
             console.log(e);
@@ -156,7 +167,7 @@ app.post('/liveh2h',function(req,res){
             urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
             urlSlack += "&username=LiveH2H";
             
-            console.log(arr);
+            
             if(arr[0] === "webinar"){
                 //res.setHeader('Content-Type', 'application/json')
                 res.send("Webinar not yet supported.");
@@ -191,6 +202,15 @@ app.post('/liveh2h',function(req,res){
                         json: obj
                     },function(err,response,body){
                         if(err){throw err;}
+                        try{
+                            connection.query("UPDATE h2h_ext_slack SET slack_meeting_count = slack_meeting_count + 1 WHERE slack_team_id = "+thisTeam ,
+                                             function(err,rows,field){
+                                                if(err) throw err;
+
+                            })
+                        }catch(e){
+                            console.log(e);
+                        }
                         var emailURL = response.body.data.serverURL;
                         meetingurl = response.body.data.meetingURL;
                         var urlDecoded = JSON.parse(decodeURIComponent(atob(response.body.data.meetingUri))),
