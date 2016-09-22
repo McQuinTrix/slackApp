@@ -139,7 +139,7 @@ code{
     }
 }
 .head-h2::before {
-  content: "";
+  content: "/LiveH2H";
   animation: changeLetter 2.5s linear 1 alternate;
   animation-fill-mode:forwards;
 }
