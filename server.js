@@ -60,7 +60,7 @@ connection.connect();
 
 //For Showing that script is running
 app.get('/',function(req,res){
-	res.send('Running');
+	res.render('/index.html');
 });
 
 var dbObj = {};
