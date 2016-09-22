@@ -203,7 +203,7 @@ app.post('/liveh2h',function(req,res){
                     },function(err,response,body){
                         if(err){throw err;}
                         try{
-                            connection.query("UPDATE h2h_ext_slack SET slack_meeting_count = slack_meeting_count + 1 WHERE slack_team_id = "+thisTeam ,
+                            connection.query("UPDATE h2h_ext_slack SET slack_meeting_count = slack_meeting_count + 1 WHERE slack_team_id = '"+thisTeam+"'" ,
                                              function(err,rows,field){
                                                 if(err) throw err;
 
