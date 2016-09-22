@@ -211,6 +211,7 @@ app.post('/liveh2h',function(req,res){
                         json: obj
                     },function(err,response,body){
                         if(err){throw err;}
+                        console.log(resp);
                         try{
                             connection.query("UPDATE h2h_ext_slack SET slack_meeting_count = slack_meeting_count + 1 WHERE slack_team_id = '"+thisTeam+"'" ,
                                              function(err,rows,field){
@@ -243,7 +244,7 @@ app.post('/liveh2h',function(req,res){
                                 "ts": timeStamp
                             }]
                             }},function(err,resp){
-
+                                
                             })
                         //Participants
                         var PartURL = "";
