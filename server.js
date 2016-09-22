@@ -204,7 +204,9 @@ app.post('/liveh2h',function(req,res){
                     //CALL TO API
                     request({
                         uri: apiUrl,
-                        referer: "Slack - "+teamName,
+                        headers:{
+                            referrer: "Slack - "+teamName
+                        },
                         method: 'POST',
                         json: obj
                     },function(err,response,body){
