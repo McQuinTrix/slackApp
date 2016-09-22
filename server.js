@@ -101,11 +101,13 @@ app.get('/authorize',function(req,res){
                     connection.query( theInsert, function(err,rows,field){
                         if(err) throw err;
                         console.log(rows);
+                        res.redirect('/');
                     })
                 }else{
                     connection.query( theUpdate, function(err,rows,field){
                         if(err) throw err;
                         console.log(rows);
+                        res.redirect('/');
                     })   
                 }
             })
