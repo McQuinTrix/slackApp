@@ -12,7 +12,7 @@ var mysql = require('mysql');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname, 'public'));
 var engine = require('consolidate');
 
 app.set('views', __dirname + '/views');
