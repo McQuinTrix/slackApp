@@ -11,6 +11,7 @@
     "http": "latest",
     "mustache": "^2.2.1",
     "mysql": "^2.11.1",
+    "path": "^0.12.7",
     "pg": "6.1.0",
     "querystring": "latest",
     "request": "^2.74.0",

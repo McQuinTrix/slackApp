@@ -9,6 +9,7 @@ var app = express();
 var btoa = require('btoa');
 var atob = require('atob');
 var mysql = require('mysql');
+ var path = require('path');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 //app.set('views', __dirname + '/');
 app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
+app.use(express.static(path.join(__dirname, 'public')));
 
 /***************************/
 /*** SERVER CERTIFICATES ***/
@@ -64,7 +66,7 @@ connection.connect();
 
 //For Showing that script is running
 app.get('/',function(req,res){
-	res.render('/index.html');
+	res.render('index.html');
 });
 
 var dbObj = {};
