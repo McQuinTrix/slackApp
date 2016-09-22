@@ -161,8 +161,12 @@ app.post('/liveh2h',function(req,res){
                 //res.setHeader('Content-Type', 'application/json')
                 res.send("Webinar not yet supported.");
 
-            }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#" ||req.body.text.trim().length === 0 ){
-                res.send("Creating a meeting and inviting others!");
+            }else if(arr[0] === "meetnow" || arr[0][0]==="@" || arr[0][0]==="#" || arr[0].length === 0 ){
+                var str =""
+                if(arr[0].length !== 0 && typeof arr[1] !== undefined){
+                        str =" and inviting others";
+                }
+                res.send("Creating a meeting"+str+"!");
                 //POST Request to get USER LIST
                 request({
                     uri: "https://slack.com/api/users.list?token="+tokenUsed,
