@@ -15,7 +15,8 @@
     "pg": "6.1.0",
     "querystring": "latest",
     "request": "^2.74.0",
-    "require": "^2.4.20"
+    "require": "^2.4.20",
+    "winston": "^2.2.0"
   },
   "devDependencies": {
     "random-js": "^1.0.8"

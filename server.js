@@ -10,6 +10,8 @@ var btoa = require('btoa');
 var atob = require('atob');
 var mysql = require('mysql');
  var path = require('path');
+var winston = require("winston");
+winston.add(winston.transports.File, { filename: 'logs.log' });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -24,10 +26,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 /***************************/
 var server;
 //TURN OFF FOR MEETDEV1
-var heroku = false;
+var heroku = true;
 var fs      = require('fs');
 var path    = require('path');
-var port    = process.env.PORT || 8094;
+var port    = process.env.PORT || 8091;
 var protocol = "https";
 var directory  = module.filename.substr(0, module.filename.lastIndexOf("/")); 
 
@@ -71,7 +73,7 @@ app.get('/',function(req,res){
 
 var dbObj = {};
 dbObj.getSelect = function(teamID){
-    return "SELECT * FROM h2h_ext_slack WHERE slack_team_id ='"+teamID+"'";
+    return "SELECT * FROM h2h_plugins_slack WHERE slack_team_id ='"+teamID+"'";
 }
 
 //Authorize
@@ -90,10 +92,10 @@ app.get('/authorize',function(req,res){
             bot_access_token = json.bot.bot_access_token;
         //QUERIES----
         var theSelect = dbObj.getSelect(team_id),
-            theDelete = "DELETE FROM h2h_ext_slack WHERE slack_team_id ='"+team_id+"'",
-            theInsert = "INSERT INTO h2h_ext_slack (slack_team_id,slack_token,slack_team_name,slack_bot_user_id,slack_bot_token) VALUES ('";
+            theDelete = "DELETE FROM h2h_plugins_slack WHERE slack_team_id ='"+team_id+"'",
+            theInsert = "INSERT INTO h2h_plugins_slack (slack_team_id,slack_token,slack_team_name,slack_bot_user_id,slack_bot_token) VALUES ('";
         theInsert += team_id+"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');";
-        var theUpdate = "UPDATE h2h_ext_slack SET slack_token='"+access_token+"'"
+        var theUpdate = "UPDATE h2h_plugins_slack SET slack_token='"+access_token+"'"
                         + ", slack_team_name='"+team_name+"'"
                         + ", slack_bot_user_id='"+bot_user_id+"'"
                         + ", slack_bot_token='"+bot_access_token+"'"
@@ -115,7 +117,7 @@ app.get('/authorize',function(req,res){
                 }
             })
         }catch(e){
-            console.log(e);
+            winston.log(e);
         }
         //-----------
         //EXECUTING QUERIES---
@@ -128,12 +130,12 @@ app.get('/authorize',function(req,res){
                 if(err) throw err;
                 if(result.rowCount > 0){
                     client.query(theDelete, function(err,result){
-                        if(err){console.error(err);}
+                        if(err){winston.error(err);}
                         else{
                             //INSERTING TO TABLE slack.tokens
                             client.query(theString, function(err,result){
                                 done();
-                                if(err){console.error(err);}
+                                if(err){winston.error(err);}
                             })
                             //-------------------
                         }
@@ -143,7 +145,7 @@ app.get('/authorize',function(req,res){
                     //INSERTING TO TABLE slack.tokens
                     client.query(theString, function(err,result){
                         done();
-                        if(err){console.error(err);}
+                        if(err){winston.error(err);}
                     })
                     //-------------------
                 }
@@ -192,7 +194,7 @@ app.post('/liveh2h',function(req,res){
                     if(errUList){
                         throw errUList;
                     }
-                    console.log(bodyUList);
+                    winston.log(bodyUList);
 
                     var apiUrl = "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/instant",
                     name = req.body.user_name.replace(/_/g, " "),
@@ -200,7 +202,7 @@ app.post('/liveh2h',function(req,res){
                     obj = {name:name, email:email},
                     meetingurl = "";
 
-                    console.log(name);
+                    winston.log(name);
                     //CALL TO API
                     request({
                         uri: apiUrl,
@@ -211,15 +213,15 @@ app.post('/liveh2h',function(req,res){
                         json: obj
                     },function(err,response,body){
                         if(err){throw err;}
-                        console.log(response);
+                        winston.log(response);
                         try{
-                            connection.query("UPDATE h2h_ext_slack SET slack_meeting_count = slack_meeting_count + 1 WHERE slack_team_id = '"+thisTeam+"'" ,
+                            connection.query("UPDATE h2h_plugins_slack SET slack_meeting_count = slack_meeting_count + 1 WHERE slack_team_id = '"+thisTeam+"'" ,
                                              function(err,rows,field){
                                                 if(err) throw err;
 
                             })
                         }catch(e){
-                            console.log(e);
+                            winston.log(e);
                         }
                         var emailURL = response.body.data.serverURL;
                         meetingurl = response.body.data.meetingURL;
@@ -259,7 +261,7 @@ app.post('/liveh2h',function(req,res){
                             if((arr[0]==="meetnow" && num > 0) || (arr[0]!=="meetnow")){
                                 if(elem[0] === "@"){
                                     var pLink = "";
-                                    console.log(meetingID);
+                                    winston.log(meetingID);
                                     var partstr ={"name": elem.substring(1),"meetingId":meetingID};
                                     request({
                                         uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
@@ -270,7 +272,7 @@ app.post('/liveh2h',function(req,res){
                                         json: partstr
                                     }, function(err,resp){
                                         if(err){throw err;}
-                                        console.log("Invitee: "+elem.substring(1));
+                                        winston.log("Invitee: "+elem.substring(1));
                                         pLink = resp.body.data.meetingURL;
                                         PartURL = urlSlack+"&channel=%40"+elem.substring(1)
                                         PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting ('+theID+'), and you have been invited: <'+pLink+'|Click here to join>"}]');
@@ -296,11 +298,11 @@ app.post('/liveh2h',function(req,res){
                                     url: emailURL  + "/h2h_data/h2h_invitees",
                                     json: sendObj
                                 },function(err,resp){
-                                    if(err) console.log(err);
-                                    console.log(resp.body);
+                                    if(err) winston.log(err);
+                                    winston.log(resp.body);
                                 });
                             }catch(e){
-                                console.log(e);
+                                winston.log(e);
                             }
                         }
                     })
@@ -367,7 +369,7 @@ app.post('/liveh2h',function(req,res){
 
 //Listening Command
 /*app.listen('8093', function() {
-  console.log('Slack app is running on port', '8093');
+  winston.log('Slack app is running on port', '8093');
 });*/
     
 //Hipchat Command
@@ -384,9 +386,9 @@ app.post('/hipchat',function(req,res){
         json: json
     },function(err,resp,body){
         if(err){
-            console.log(err);
+            winston.log(err);
         }else{
-            console.log(resp.statusCode, body);
+            winston.log(resp.statusCode, body);
         }
     })
 })
