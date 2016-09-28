@@ -11,12 +11,10 @@ var atob = require('atob');
 var mysql = require('mysql');
  var path = require('path');
 var winston = require("winston");
-winston.add(winston.transports.File, { filename: 'logs.log' });
+winston.add(winston.transports.File, { filename: './logs.log' });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-
-//app.set('views', __dirname + '/');
 app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
 app.use(express.static(path.join(__dirname, 'public')));
@@ -26,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /***************************/
 var server;
 //TURN OFF FOR MEETDEV1
-var heroku = true;
+var heroku = false;
 var fs      = require('fs');
 var path    = require('path');
 var port    = process.env.PORT || 8091;
@@ -38,20 +36,26 @@ app.use(function(req, res, next) {  // CORS on ExpressJS (http://enable-cors.org
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+try{
+    if (protocol == "http" || heroku) {
+      server = require('http').Server(app);
+    } else {
+        var hskey  = fs.readFileSync('/opt/web/mybase/testcerts2/h2h.key');
+        var hscert = fs.readFileSync('/opt/web/mybase/testcerts2/h2h.crt');
+        var options = {
+          requestCert: true,
+          rejectUnauthorized: false,
+          key:  hskey,
+          cert: hscert,
+          passphrase: 'tgh2hk'
+        };  
 
-if (protocol == "http" || heroku) {
-  server = require('http').Server(app);
-} else {
-    var hskey  = fs.readFileSync('/opt/web/mybase/testcerts2/h2h.key');
-    var hscert = fs.readFileSync('/opt/web/mybase/testcerts2/h2h.crt');
-    var options = {
-      key:  hskey,
-      cert: hscert,
-      passphrase: 'tgh2hk'
-    };  
-    
-    server = require('https').Server(options, app);  
+        server = require('https').Server(options, app);  
+    }
+}catch(e){
+    throw e;
 }
+
 //server = require('http').Server(app);
 server.listen(port);
 /***************************/
@@ -82,7 +86,7 @@ app.get('/authorize',function(req,res){
     var code = req.query.code;
     //AUTHORIZATION CODE VERIFICATION
     request.post("https://slack.com/api/oauth.access?client_id=72362934594.72343901492&client_secret=774325bbe3f942efb71d5db978eb5a4b&code="+code,function(err,resp,body){
-        if(err) throw err;
+        if(err){throw err;};
         var json = JSON.parse(body);
         var access_token = json.access_token,
             user_id = json.user_id,
@@ -103,7 +107,7 @@ app.get('/authorize',function(req,res){
         
         try{
             connection.query( theSelect, function(err,rows,field){
-                if (err) throw err;
+                if (err) {winston.error(err.message);throw err;}
                 if(rows.length === 0){
                     connection.query( theInsert, function(err,rows,field){
                         if(err) throw err;
@@ -111,13 +115,13 @@ app.get('/authorize',function(req,res){
                     })
                 }else{
                     connection.query( theUpdate, function(err,rows,field){
-                        if(err) throw err;
+                        if(err) {winston.error(err.message);throw err;}
                         res.redirect('/');
                     })   
                 }
             })
         }catch(e){
-            winston.log(e);
+            throw e;
         }
         //-----------
         //EXECUTING QUERIES---
@@ -169,13 +173,14 @@ app.post('/liveh2h',function(req,res){
         thisTeam = req.body.team_id,
         urlSlack = "https://slack.com/api/chat.postMessage?";
         connection.query(dbObj.getSelect(thisTeam),function(err,rows,field){
+            if(err){throw err;}
             tokenUsed = "token="+rows[0].slack_token;
             var teamName = rows[0].slack_team_name;
             urlSlack += tokenUsed,
             urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
             urlSlack += "&username=LiveH2H";
             
-            
+            winston.info(tokenUsed);
             if(arr[0] === "webinar"){
                 //res.setHeader('Content-Type', 'application/json')
                 res.send("Webinar not yet supported.");
@@ -194,7 +199,6 @@ app.post('/liveh2h',function(req,res){
                     if(errUList){
                         throw errUList;
                     }
-                    winston.log(bodyUList);
 
                     var apiUrl = "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/instant",
                     name = req.body.user_name.replace(/_/g, " "),
@@ -202,7 +206,7 @@ app.post('/liveh2h',function(req,res){
                     obj = {name:name, email:email},
                     meetingurl = "";
 
-                    winston.log(name);
+                    winston.info(name);
                     //CALL TO API
                     request({
                         uri: apiUrl,
@@ -213,7 +217,6 @@ app.post('/liveh2h',function(req,res){
                         json: obj
                     },function(err,response,body){
                         if(err){throw err;}
-                        winston.log(response);
                         try{
                             connection.query("UPDATE h2h_plugins_slack SET slack_meeting_count = slack_meeting_count + 1 WHERE slack_team_id = '"+thisTeam+"'" ,
                                              function(err,rows,field){
@@ -221,7 +224,7 @@ app.post('/liveh2h',function(req,res){
 
                             })
                         }catch(e){
-                            winston.log(e);
+                            throw e;
                         }
                         var emailURL = response.body.data.serverURL;
                         meetingurl = response.body.data.meetingURL;
@@ -233,7 +236,8 @@ app.post('/liveh2h',function(req,res){
                         var HostURL = urlSlack + "&channel=%40"+req.body.user_name;
                             HostURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from LiveH2H!","text":"Hello! Your meeting ('+theID+') has been created : <'+hLink+'|Click here to join>"}]');
                         //Host Messge
-                        request.post(HostURL);
+                        request.post(HostURL,function(err,resp){
+                        });
                         request.post(req.body.response_url,{json:{
                             "response_type": "ephemeral",
                             "attachments": [{
@@ -246,7 +250,11 @@ app.post('/liveh2h',function(req,res){
                                 "ts": timeStamp
                             }]
                             }},function(err,resp){
-                                
+                                if(err){
+                                     throw err;
+                                    winston.error(err);
+                                }
+                                console.log(resp);
                             })
                         //Participants
                         var PartURL = "";
@@ -261,7 +269,7 @@ app.post('/liveh2h',function(req,res){
                             if((arr[0]==="meetnow" && num > 0) || (arr[0]!=="meetnow")){
                                 if(elem[0] === "@"){
                                     var pLink = "";
-                                    winston.log(meetingID);
+                                    winston.info(meetingID);
                                     var partstr ={"name": elem.substring(1),"meetingId":meetingID};
                                     request({
                                         uri: "https://app.liveh2h.com/tutormeetweb/rest/v1/meetings/join",
@@ -272,7 +280,7 @@ app.post('/liveh2h',function(req,res){
                                         json: partstr
                                     }, function(err,resp){
                                         if(err){throw err;}
-                                        winston.log("Invitee: "+elem.substring(1));
+                                        winston.info("Invitee: "+elem.substring(1));
                                         pLink = resp.body.data.meetingURL;
                                         PartURL = urlSlack+"&channel=%40"+elem.substring(1)
                                         PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting ('+theID+'), and you have been invited: <'+pLink+'|Click here to join>"}]');
@@ -298,11 +306,11 @@ app.post('/liveh2h',function(req,res){
                                     url: emailURL  + "/h2h_data/h2h_invitees",
                                     json: sendObj
                                 },function(err,resp){
-                                    if(err) winston.log(err);
-                                    winston.log(resp.body);
+                                    if(err) winston.info(err);
                                 });
                             }catch(e){
-                                winston.log(e);
+                                winston.error(e.message);
+                                throw e;
                             }
                         }
                     })
@@ -340,7 +348,12 @@ app.post('/liveh2h',function(req,res){
                     }]
 
                 }},function(err,resp,body){
-
+                    
+                    if(err){
+                         throw err;
+                        winston.error(err);
+                    }
+                   
                 })
             }else if(arr[0] === "join"){
                 res.send("Creating meeting link - lookout for slackbot message!");
@@ -350,7 +363,7 @@ app.post('/liveh2h',function(req,res){
                     method: 'POST',
                     json: partstr
                 }, function(err,resp){
-                    if(err){throw err;}
+                    if(err){winston.error(err.message);throw err;}
                     PartURL = urlSlack+"&channel=%40"+req.body.user_name;
                     if(resp.body.returnCode === 14){
                         PartURL += "&text=Meeting Not Found!";
@@ -369,7 +382,7 @@ app.post('/liveh2h',function(req,res){
 
 //Listening Command
 /*app.listen('8093', function() {
-  winston.log('Slack app is running on port', '8093');
+  winston.info('Slack app is running on port', '8093');
 });*/
     
 //Hipchat Command
@@ -386,9 +399,9 @@ app.post('/hipchat',function(req,res){
         json: json
     },function(err,resp,body){
         if(err){
-            winston.log(err);
+            winston.info(err);
         }else{
-            winston.log(resp.statusCode, body);
+            winston.info(resp.statusCode, body);
         }
     })
 })
