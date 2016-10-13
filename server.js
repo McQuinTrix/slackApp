@@ -40,13 +40,14 @@ try{
     if (protocol == "http" || heroku) {
       server = require('http').Server(app);
     } else {
-        var hskey  = fs.readFileSync('/opt/web/mybase/testcerts2/h2h.key');
-        var hscert = fs.readFileSync('/opt/web/mybase/testcerts2/h2h.crt');
+        var hskey  = fs.readFileSync('/opt/web/mybase/testcerts2/liveh2h_com.key');
+        var hscert = fs.readFileSync('/opt/web/mybase/testcerts2/liveh2h_com.crt');
+        var cacert = fs.readFileSync('/opt/web/mybase/testcerts2/CA.crt');
         var options = {
-          requestCert: true,
           rejectUnauthorized: false,
           key:  hskey,
           cert: hscert,
+          ca: cacert,
           passphrase: 'tgh2hk'
         };  
 
@@ -84,20 +85,22 @@ dbObj.getSelect = function(teamID){
 app.get('/authorize',function(req,res){
     var str = "";
     var code = req.query.code;
+    var client_id = "19710695585.81036963991";
+    var client_secret = "640cd7625195f277c2f8dab08713419e";
     //AUTHORIZATION CODE VERIFICATION
-    request.post("https://slack.com/api/oauth.access?client_id=72362934594.72343901492&client_secret=774325bbe3f942efb71d5db978eb5a4b&code="+code,function(err,resp,body){
+    request.post("https://slack.com/api/oauth.access?client_id="+client_id+"&client_secret="+client_secret+"&code="+code,function(err,resp,body){
         if(err){throw err;};
         var json = JSON.parse(body);
         var access_token = json.access_token,
             user_id = json.user_id,
-            team_name = json.team_name,
+            team_name = encodeURIComponent(json.team_name).replace(/\'/g," "),
             team_id = json.team_id,
             bot_user_id = json.bot.bot_user_id,
             bot_access_token = json.bot.bot_access_token;
         //QUERIES----
         var theSelect = dbObj.getSelect(team_id),
             theDelete = "DELETE FROM h2h_plugins_slack WHERE slack_team_id ='"+team_id+"'",
-            theInsert = "INSERT INTO h2h_plugins_slack (slack_team_id,slack_token,slack_team_name,slack_bot_user_id,slack_bot_token) VALUES ('";
+            theInsert = "INSERT INTO h2h_plugins_slack (`slack_team_id`,`slack_token`,`slack_team_name`,`slack_bot_user_id`,`slack_bot_token`) VALUES ('";
         theInsert += team_id+"', '"+access_token+"', '"+team_name+"', '"+bot_user_id+"', '"+bot_access_token+"');";
         var theUpdate = "UPDATE h2h_plugins_slack SET slack_token='"+access_token+"'"
                         + ", slack_team_name='"+team_name+"'"
