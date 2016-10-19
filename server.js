@@ -87,6 +87,10 @@ app.get('/authorize',function(req,res){
     var code = req.query.code;
     var client_id = "19710695585.81036963991";
     var client_secret = "640cd7625195f277c2f8dab08713419e";
+    if(heroku){
+        client_id = "72362934594.72343901492";
+        client_secret = "774325bbe3f942efb71d5db978eb5a4b";
+    }
     //AUTHORIZATION CODE VERIFICATION
     request.post("https://slack.com/api/oauth.access?client_id="+client_id+"&client_secret="+client_secret+"&code="+code,function(err,resp,body){
         if(err){throw err;};
