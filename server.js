@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /***************************/
 var server;
 //TURN OFF FOR MEETDEV1
-var heroku = true;
+var heroku = false;
 var fs      = require('fs');
 var path    = require('path');
 var port    = process.env.PORT || 8091;
