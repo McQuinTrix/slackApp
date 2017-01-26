@@ -99,8 +99,8 @@ app.get('/authorize',function(req,res){
             user_id = json.user_id,
             team_name = encodeURIComponent(json.team_name).replace(/\'/g," "),
             team_id = json.team_id,
-            bot_user_id = json.bot.bot_user_id,
-            bot_access_token = json.bot.bot_access_token;
+            bot_user_id = "removed",
+            bot_access_token = "removed";
         //QUERIES----
         var theSelect = dbObj.getSelect(team_id),
             theDelete = "DELETE FROM h2h_plugins_slack WHERE slack_team_id ='"+team_id+"'",
@@ -184,7 +184,7 @@ app.post('/liveh2h',function(req,res){
             tokenUsed = "token="+rows[0].slack_token;
             var teamName = rows[0].slack_team_name;
             urlSlack += tokenUsed,
-            urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatar-temp/2016-09-18/80976650579_59e903b677a8359139ab.png");
+            urlSlack += "&icon_url="+encodeURIComponent("https://s3-us-west-2.amazonaws.com/slack-files2/avatars/2016-09-22/83003331219_2ff618441b0503ebc756_512.png");
             urlSlack += "&username=LiveH2H";
             
             winston.info(tokenUsed);
@@ -261,7 +261,6 @@ app.post('/liveh2h',function(req,res){
                                      throw err;
                                     winston.error(err);
                                 }
-                                console.log(resp);
                             })
                         //Participants
                         var PartURL = "";
@@ -291,8 +290,10 @@ app.post('/liveh2h',function(req,res){
                                         pLink = resp.body.data.meetingURL;
                                         PartURL = urlSlack+"&channel=%40"+elem.substring(1)
                                         PartURL += '&attachments=' + encodeURIComponent('[{"fallback": "Meeting invite from '+req.body.user_name+'","text":"Hello! '+req.body.user_name+' has created a meeting ('+theID+'), and you have been invited: <'+pLink+'|Click here to join>"}]');
-
-                                        request.post(PartURL);
+                                        request.post(PartURL,function(err){
+                                            throw err;
+                                            winston.info("Error: "+ err)
+                                        });
                                     })
 
                                 }else if(elem[0] === "#"){
